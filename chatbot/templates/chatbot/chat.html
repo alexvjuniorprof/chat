@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div id="chatbox">
+        {% for entry in chat_history %}
+            {% if entry.role == 'user' %}
+                <p>User: {{ entry.parts.0.text }}</p>
+            {% else %}
+                <p>Bot: {{ entry.parts.0.text }}</p>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <input type="text" id="message" placeholder="Digite sua mensagem">
+    <button id="send">Enviar</button>
+
+    <script>
+        $(document).ready(function() {
+            $('#send').click(function() {
+                var message = $('#message').val();
+                $.post("{% url 'send_message' %}", {
+                    'message': message,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                }, function(data) {
+                    $('#chatbox').append('<p>User: ' + data.message + '</p>');
+                    $('#chatbox').append('<p>Bot: ' + data.response + '</p>');
+                    $('#message').val('');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
