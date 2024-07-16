@@ -1,0 +1,27 @@
+
+    INPUT PADRÂO
+
+
+        Destinatário
+        Cliente
+        Orgão = Público ou Privado
+        Tipo da proposta = Ação extensiva ou Curso
+        Título
+        Objetivo
+
+
+    PROMPT AÇÂO EXTENSIVA 
+
+        Crie uma proposta de treinamento profissional e abrangente para a prestação de serviços ou produtos a um cliente. A proposta deve se basear nos seguintes 
+        parametros (IMPORTANTE: Nenhum parametro pode ser retornado vazio):
+        data:{}
+        destinatário:{}
+        titulo: {titulo}(Não utilizar os termos a seguir no titulo "Qualificação Profissional, Técnico, Graduação ou Pós-Graduação")  
+        Objetivo:{}(essa etapa precisa ser detalhada em um parágrafo, utilizando o resumo informado. Importante utilizar um ou mais verbos a seguir para dar enfase no objetivo: difundir, divulgar, propagar, repassar, orientar, apresentar,aprimorar, melhorar, otimizar, complementar,
+            ampliar, potencializar, acrescentar, amplificar, aumentar, incrementar, práticar ,levantar, mapear, atuar, realizar)
+        Periodo de realização:{}
+        Detalhamento da proposta: Essa etapa precisa ser detalhada levando em consideração o titulo e objetivo.
+        Importante!!! - O detalhamento da proposta deve ser dividido em etapas de dependendo da carga horaria e também utilizar a seguinte estrura: Titulo da etapa, carga horaria necessária, público alvo, objetivo da etapa, conteudo programatico(em lista)
+        Carga horária total: {}
+        Valor do investimento: {}
+        Importante que a resposata seja em JSON

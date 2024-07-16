@@ -12,20 +12,19 @@
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-dark px-4">
-    <a class="navbar-brand text-white" href="#">GenIA</a>
+    <a class="navbar-brand text-white" href="{% url 'chat_view' %}">GenIA</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
+            {% if request.user.is_superuser %}
             <li class="nav-item">
-                <a class="nav-link text-white" href="#">Listar Usuário</a>
+                <a class="nav-link text-white" href="{% url 'list-users' %}">Listar Usuários</a>
             </li>
+            {% endif %}
             <li class="nav-item">
-                <a class="nav-link text-white" href="#">Adicionar Usuário</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="#">Sair</a>
+                <a class="nav-link text-white" href="{% url 'logout' %}">Sair</a>
             </li>
         </ul>
     </div>
