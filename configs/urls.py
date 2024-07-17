@@ -7,4 +7,6 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('list-users/', views.list_users, name='list-users'),
     path('create-user/', views.create_user, name='create-user'),
+    path('change-password/', views.update_password, name='change_password'),
+
 ]

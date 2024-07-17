@@ -1,14 +1,17 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 import google.generativeai as genai
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from .decorators import update_password
+from django.contrib.auth import login
+from .models import CustomUser
 
 # Configurar a API do Google Gemini
 genai.configure(api_key="AIzaSyAMBJfbMpW5iqt3XsqFjyIdhfFbfU7YbkE")
 model = genai.GenerativeModel("gemini-pro")
 
 @login_required(redirect_field_name='login')
+@update_password
 def chat_view(request):
     request.session['chat_history'] = []
     return render(request, 'chatbot/chat.html')
@@ -36,11 +39,30 @@ def generate_response(message, request):
 
 
 
+def update_password(request):
+
+    if request.method == "POST":
+        password = request.POST['password']
+        repeat_password = request.POST['repeat_password']
+
+        if password == repeat_password:
+            update_user = request.user
+            update_user.set_password(password)
+            update_user.reset_password = True
+            update_user.save()
+            login(request, update_user)
+            return redirect('chat_view')
+            
+        else:
+            return redirect('update_password')
+
+    else:
+        return render(request, 'chatbot/change_password.html')
 
 
 @login_required(redirect_field_name='login')
 def list_users(request):
-    users = User.objects.all()
+    users = CustomUser.objects.all()
     return render(request, 'chatbot/list_users.html', {'users':users})
 
 
@@ -50,7 +72,7 @@ def create_user(request):
     admin = request.POST['admin']
     password = request.POST['password']
     
-    new_user = User.objects.create_user(username=username, email=email, password=password)
+    new_user = CustomUser.objects.create_user(username=username, email=email, password=password)
     
     if admin == '1':
         new_user.is_superuser = True
