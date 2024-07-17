@@ -3,6 +3,7 @@ from django.http import JsonResponse
 import google.generativeai as genai
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from questions import services as QuestionService
 
 # Configurar a API do Google Gemini
 genai.configure(api_key="AIzaSyAMBJfbMpW5iqt3XsqFjyIdhfFbfU7YbkE")
@@ -10,12 +11,18 @@ model = genai.GenerativeModel("gemini-pro")
 
 @login_required(redirect_field_name='login')
 def chat_view(request):
-    request.session['chat_history'] = []
+    request.session['chat_history'] = [{"parts":[{"text":"Olá"}]}]
     return render(request, 'chatbot/chat.html')
 
 def send_message(request):
     if request.method == 'POST':
         message = request.POST.get('message')
+        request.session['chat_history'] = [{"parts":[{"text":"Olá"}]}]
+        return JsonResponse({'message': message, 'response': "Olá"})
+        # Traz todas as perguntas colocadas no banco
+        QuestionService.get_ordered_questions()
+    
+        # Ajustar para realizar as perguntas antes de começar com o Gemini
         response = generate_response(message, request)
         chat_history = request.session.get('chat_history', [])
         chat_history.append({'role': 'user', 'parts': [{'text': message}]},)
