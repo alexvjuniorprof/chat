@@ -19,17 +19,16 @@
 
 
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-dark px-4">
-        <a class="navbar-brand text-white" href="{% url 'chat_view' %}">GenIA</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <nav class="navbar navbar-expand-lg navbar-light px-4">
+        <a class="navbar-brand text-white" href="{% url 'chat_view' %}"><img class="logo" src="{% static 'img/logo.png' %}" alt=""></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 {% if request.user.is_superuser %}
                 <li class="nav-item">
-                    <a class="nav-link text-white" href="{% url 'list-users' %}">Listar Usuário</a>
+                    <a class="nav-link text-white" href="{% url 'list-users' %}">Listar Usuários</a>
                 </li>
                 {% endif %}
                 <li class="nav-item">
@@ -38,9 +37,6 @@
             </ul>
         </div>
     </nav>
-
-    {{ request.user.last.last_login }}
-
     <div class="container my-5">
 
 
@@ -58,7 +54,6 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5" id="exampleModalLabel">Novo usuário</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <form method="POST" action="{% url 'create-user' %}"> {% csrf_token %}
