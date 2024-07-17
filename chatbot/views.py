@@ -2,9 +2,13 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse
 import google.generativeai as genai
 from django.contrib.auth.decorators import login_required
+
 from .decorators import update_password
 from django.contrib.auth import login
 from .models import CustomUser
+=======
+from questions import services as QuestionService
+
 
 # Configurar a API do Google Gemini
 genai.configure(api_key="AIzaSyAMBJfbMpW5iqt3XsqFjyIdhfFbfU7YbkE")
@@ -14,6 +18,7 @@ model = genai.GenerativeModel("gemini-pro")
 @update_password
 def chat_view(request):
     request.session['chat_history'] = []
+    request.session["firsts_questions"] = QuestionService.get_ordered_questions()
     return render(request, 'chatbot/chat.html')
 
 def send_message(request):
