@@ -6,8 +6,7 @@ from django.contrib.auth.decorators import login_required
 from .decorators import update_password
 from django.contrib.auth import login
 from .models import CustomUser
-=======
-from questions import services as QuestionService
+from questions.models import Question
 
 
 # Configurar a API do Google Gemini
@@ -18,12 +17,13 @@ model = genai.GenerativeModel("gemini-pro")
 @update_password
 def chat_view(request):
     request.session['chat_history'] = []
-    request.session["firsts_questions"] = QuestionService.get_ordered_questions()
-    return render(request, 'chatbot/chat.html')
+    array_questions = Question.objects.all()
+    return render(request, 'chatbot/chat.html', {'array_questions':array_questions})
 
 def send_message(request):
     if request.method == 'POST':
         message = request.POST.get('message')
+        print(message)
         response = generate_response(message, request)
         chat_history = request.session.get('chat_history', [])
         chat_history.append({'role': 'user', 'parts': [{'text': message}]},)
