@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de usuários</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+        integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+
+
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark px-4">
+        <a class="navbar-brand text-white" href="{% url 'chat_view' %}">GenIA</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                {% if request.user.is_superuser %}
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'list-users' %}">Listar Usuário</a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{% url 'logout' %}">Sair</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    {{ request.user.last.last_login }}
+
+    <div class="container my-5">
+
+
+        <div class="container align-items-center d-flex justify-content-between">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-secondary" style="height: 40px;" data-bs-toggle="modal"
+                data-bs-target="#exampleModal">
+                + Adicionar Usuário
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Novo usuário</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" action="{% url 'create-user' %}"> {% csrf_token %}
+                                <div class="mb-2">
+                                    <label for="exampleInputEmail1" class="form-label">Usuário</label>
+                                    <input type="text" class="form-control" name="username" id="exampleInputEmail1"
+                                        aria-describedby="emailHelp">
+                                </div>
+                                <div class="mb-2">
+                                    <label for="exampleInputEmail1" class="form-label">Administrador</label>
+                                    <select class="form-control" name="admin" id="">
+                                        <option value="0">Não</option>
+                                        <option value="1">Sim</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label for="exampleInputEmail1" class="form-label">Email</label>
+                                    <input type="email" class="form-control" name="email" id="exampleInputEmail1"
+                                        aria-describedby="emailHelp">
+                                </div>
+                                <div class="mb-5">
+                                    <label for="exampleInputPassword1" class="form-label">Senha</label>
+                                    <input type="password" class="form-control" name="password"
+                                        id="exampleInputPassword1">
+                                </div>
+                                <button type="submit" class="btn btn-success">Adicionar</button>
+                                <button type="reset" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <input class="form-control my-3 w-25 position-right" id="myInput" type="text" placeholder="Nome do usuário">
+        </div>
+
+
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Administrador</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+                {% for user in users %}
+                <tr>
+                    <th scope="row">{{user.id}}</th>
+                    <td>{{user.username}}</td>
+                    <td>{{user.email}}</td>
+                    <td>{% if user.is_superuser %} Sim {% else %} Não {% endif %} </td>
+                    <td>{% if user.is_active %} Habilitado {% else %} Desabilitado {% endif %} </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>

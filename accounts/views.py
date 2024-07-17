@@ -23,7 +23,7 @@ def login(request):
 
 
 def logout(request):
-    auth.logout()
+    auth.logout(request)
     return redirect("login")
 
 

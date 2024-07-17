@@ -1,11 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import JsonResponse
 import google.generativeai as genai
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 # Configurar a API do Google Gemini
 genai.configure(api_key="AIzaSyAMBJfbMpW5iqt3XsqFjyIdhfFbfU7YbkE")
 model = genai.GenerativeModel("gemini-pro")
 
+@login_required(redirect_field_name='login')
 def chat_view(request):
     request.session['chat_history'] = []
     return render(request, 'chatbot/chat.html')
@@ -30,3 +33,31 @@ def generate_response(message, request):
     response = chat.send_message(message)
 
     return response.candidates[0].content.parts[0].text
+
+
+
+
+
+@login_required(redirect_field_name='login')
+def list_users(request):
+    users = User.objects.all()
+    return render(request, 'chatbot/list_users.html', {'users':users})
+
+
+def create_user(request):
+    username = request.POST['username']
+    email = request.POST['email']
+    admin = request.POST['admin']
+    password = request.POST['password']
+    
+    new_user = User.objects.create_user(username=username, email=email, password=password)
+    
+    if admin == '1':
+        new_user.is_superuser = True
+        new_user.save()
+
+    
+    return redirect('list-users')
+    
+    
+    
