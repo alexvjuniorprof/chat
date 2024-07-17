@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-
 <nav class="navbar navbar-expand-lg navbar-light px-4">
     <a class="navbar-brand text-white" href="{% url 'chat_view' %}"><img class="logo" src="{% static 'img/logo.png' %}" alt=""></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,7 +38,18 @@
 
 <div class="chat-container" style="margin-left: 320px;">
     <div class="chat-box" id="chatbox">
+        <div class="chat-message bot">
+            <div class="bot-img"></div>
+            <div class="message">
+                
+                <b>Bem-vindo à GeInA, sua assistente de propostas corporativas!</b>
+                <p>Olá! Estou aqui para ajudar no processo de criação da sua proposta corporativa. Antes de começarmos, preciso de algumas informações importantes. Podemos iniciar?</p>
+
+                </div>
+        </div>
+        
         {% for entry in chat_history %}
+
             {% if entry.role == 'user' %}
                 <div class="chat-message user">
                     <div class="message">{{ entry.parts.0.text }}</div>
@@ -60,36 +70,95 @@
     </div>
 </div>
 
- 
 <script>
-    $(document).ready(function() {
-        $('#send').click(function() {
-            sendMessage();
-        });
-        $('#message').keypress(function(event) {
-            if (event.which == 13) {
+
+
+
+var response = [];
+
+
+     $(document).ready(function() {
+
+
+        
+            var currentQuestion = 0;
+            var array_questions = [
+                {% for question in array_questions %}
+                    "{{ question }}",
+                {% endfor %}
+            ];
+
+            var questions = array_questions;  
+
+            function askQuestion() {
+                if (currentQuestion < questions.length) {
+                    $('#chatbox').append('<div class="chat-message bot"><div class="bot-img"></div><div class="message">' + questions[currentQuestion] + '</div></div>');
+                    var chatBox = document.getElementById('chatbox');
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+            }
+
+            function handleInitialQuestions(message) {
+                if (currentQuestion < questions.length) {
+                    askQuestion();
+                    currentQuestion++;
+                }
+            }
+
+            $('#send').click(function() {
                 sendMessage();
-                event.preventDefault();
+            });
+
+            $('#message').keypress(function(event) {
+                if (event.which == 13) {
+                    sendMessage();
+                    event.preventDefault();
+                }
+            });
+
+            function sendMessage() {
+                var message = $('#message').val();
+                if (message.trim() === '') return;
+
+                $('#chatbox').append('<div class="chat-message user"><div class="message">' + message + '</div></div>');
+                response.push(message)
+                $('#message').val('');
+
+                if (currentQuestion < questions.length) {
+                    handleInitialQuestions(message);
+                } else {
+
+                    var prompt = `
+                Crie uma proposta de treinamento profissional e abrangente para a prestação de serviços ou produtos a um cliente com o nome ${response[2]}. 
+                A proposta deve se basear nos seguintes parametros (IMPORTANTE: Nenhum parametro pode ser retornado vazio):
+                data:{}
+                destinatário:${response[1]}
+                titulo: ${response[5]}(Não utilizar os termos a seguir no titulo "Qualificação Profissional, Técnico, Graduação ou Pós-Graduação")  
+                Objetivo:${response[6]}(essa etapa precisa ser detalhada em um parágrafo, utilizando o resumo informado. Importante utilizar um ou mais verbos a seguir para dar enfase no objetivo: difundir, divulgar, propagar, repassar, orientar, apresentar,aprimorar, melhorar, otimizar, complementar,
+                ampliar, potencializar, acrescentar, amplificar, aumentar, incrementar, práticar ,levantar, mapear, atuar, realizar)
+                Periodo de realização:{}(gerar com base na proposta)
+                Detalhamento da proposta: Essa etapa precisa ser detalhada levando em consideração o titulo e objetivo.
+                Importante!!! - O detalhamento da proposta deve ser dividido em etapas de dependendo da carga horaria e também utilizar a seguinte estrura: Titulo da etapa, carga horaria necessária, público alvo, objetivo da etapa, conteudo programatico(em lista)
+                Carga horária total: {}
+                Valor do investimento: {}
+                Importante que a resposta seja em JSON.
+                `;
+
+
+                    console.log(prompt);
+
+                    $('#chatbox').append('<div class="chat-message bot"><div class="bot-img"></div><div class="message">...</div></div>');
+                    $.post("{% url 'send_message' %}", {
+                        'message': message,
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    }, function(data) {
+                        $('.chat-message.bot:last-child .message').html(data.response);
+                        var chatBox = document.getElementById('chatbox');
+                        chatBox.scrollTop = chatBox.scrollHeight;
+                    });
+                }
             }
         });
-    });
-
-    function sendMessage() {
-    var message = $('#message').val();
-    if (message.trim() === '') return;
-    
-    $('#chatbox').append('<div class="chat-message user"><div class="message">' + message + '</div></div>');
-    $('#message').val('');
-    $('#chatbox').append('<div class="chat-message bot"><div class="bot-img"></div><div class="message">...</div></div>');
-    $.post("{% url 'send_message' %}", {
-        'message': message,
-        'csrfmiddlewaretoken': '{{ csrf_token }}'
-    }, function(data) {
-        $('.chat-message.bot:last-child .message').html(data.response);
-        var chatBox = document.getElementById('chatbox');
-        chatBox.scrollTop = chatBox.scrollHeight;
-    });
-}
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
