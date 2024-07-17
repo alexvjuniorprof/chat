@@ -11,18 +11,13 @@ model = genai.GenerativeModel("gemini-pro")
 
 @login_required(redirect_field_name='login')
 def chat_view(request):
-    request.session['chat_history'] = [{"parts":[{"text":"Olá"}]}]
+    request.session['chat_history'] = []
+    request.session["firsts_questions"] = QuestionService.get_ordered_questions()
     return render(request, 'chatbot/chat.html')
 
 def send_message(request):
     if request.method == 'POST':
         message = request.POST.get('message')
-        request.session['chat_history'] = [{"parts":[{"text":"Olá"}]}]
-        return JsonResponse({'message': message, 'response': "Olá"})
-        # Traz todas as perguntas colocadas no banco
-        QuestionService.get_ordered_questions()
-    
-        # Ajustar para realizar as perguntas antes de começar com o Gemini
         response = generate_response(message, request)
         chat_history = request.session.get('chat_history', [])
         chat_history.append({'role': 'user', 'parts': [{'text': message}]},)
