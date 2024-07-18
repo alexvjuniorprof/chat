@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 from .decorators import update_password
 from django.contrib.auth import login
-from .models import CustomUser
+from .models import CustomUser, Teacher
 from questions.models import Question
 
 
@@ -71,6 +71,15 @@ def list_users(request):
     return render(request, 'chatbot/list_users.html', {'users':users})
 
 
+@login_required(redirect_field_name='login')
+def list_teachers(request):
+    teachers = Teacher.objects.all()
+    
+    for teacher in teachers:
+        teacher.competency = teacher.competency.split(',')
+    return render(request, 'chatbot/list_teachers.html', {'teachers':teachers})
+
+
 def create_user(request):
     username = request.POST['username']
     email = request.POST['email']
@@ -85,6 +94,17 @@ def create_user(request):
 
     
     return redirect('list-users')
+
+def create_teacher(request):
+    name = request.POST['name']
+    education = request.POST['education']
+    area = request.POST['area']
+    competency = request.POST['competency']
+    
+    
+    
+    Teacher.objects.create(name=name, education=education, area=area, competency=competency)
+    return redirect('list-teachers')
     
     
     
