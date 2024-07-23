@@ -23,7 +23,6 @@ def chat_view(request):
 def send_message(request):
     if request.method == 'POST':
         message = request.POST.get('message')
-        print(message)
         response = generate_response(message, request)
         chat_history = request.session.get('chat_history', [])
         chat_history.append({'role': 'user', 'parts': [{'text': message}]},)
@@ -100,11 +99,12 @@ def create_teacher(request):
     education = request.POST['education']
     area = request.POST['area']
     competency = request.POST['competency']
-    
-    
-    
     Teacher.objects.create(name=name, education=education, area=area, competency=competency)
     return redirect('list-teachers')
     
+    
+
+def form_briefing(request):
+    return render(request, 'chatbot/briefing.html')    
     
     

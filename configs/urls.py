@@ -13,6 +13,9 @@ urlpatterns = [
     path('list-teachers/', views.list_teachers, name='list-teachers'),
     
     
+    path('briefing/', views.form_briefing, name='briefing'),
+
+    
     path('create-user/', views.create_user, name='create-user'),
     path('create-teacher/', views.create_teacher, name='create-teacher'),
     path('change-password/', views.update_password, name='change_password'),
