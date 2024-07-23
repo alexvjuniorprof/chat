@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lista de usuários</title>
+    <title>Lista de professores</title>
     <link
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
@@ -64,7 +64,7 @@
           data-bs-toggle="modal"
           data-bs-target="#exampleModal"
         >
-          + Adicionar Usuário
+          + Adicionar Professor
         </button>
 
         <!-- Modal -->
@@ -79,65 +79,60 @@
             <div class="modal-content p-3">
               <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">
-                  Novo usuário
+                  Novo Professor
                 </h1>
               </div>
               <div class="modal-body">
-                <form method="POST" action="{% url 'create-user' %}">
+                <form method="POST" action="{% url 'create-teacher' %}">
                   {% csrf_token %}
-                  <div class="mb-2">
-                    <label for="exampleInputEmail1" class="form-label"
-                      >Usuário</label
-                    >
+                  <div class="form-group">
+                    <label for="teacherName">Nome do Professor</label>
                     <input
                       type="text"
                       class="form-control"
-                      name="username"
-                      id="exampleInputEmail1"
-                      aria-describedby="emailHelp"
+                      id="teacherName"
+                      name="name"
+                      placeholder="Digite o nome do professor"
                     />
                   </div>
-                  <div class="mb-2">
-                    <label for="exampleInputEmail1" class="form-label"
-                      >Administrador</label
-                    >
-                    <select class="form-control" name="admin" id="">
-                      <option value="0">Não</option>
-                      <option value="1">Sim</option>
-                    </select>
-                  </div>
-                  <div class="mb-2">
-                    <label for="exampleInputEmail1" class="form-label"
-                      >Email</label
-                    >
+                  <div class="form-group">
+                    <label for="teacherEducation">Formação</label>
                     <input
-                      type="email"
+                      type="text"
                       class="form-control"
-                      name="email"
-                      id="exampleInputEmail1"
-                      aria-describedby="emailHelp"
+                      id="teacherEducation"
+                      name="education"
+                      placeholder="Digite a formação"
                     />
                   </div>
-                  <div class="mb-5">
-                    <label for="exampleInputPassword1" class="form-label"
-                      >Senha</label
-                    >
+                  <div class="form-group">
+                    <label for="teacherArea">Área de Atuação</label>
                     <input
-                      type="password"
+                      type="text"
                       class="form-control"
-                      name="password"
-                      id="exampleInputPassword1"
+                      id="teacherArea"
+                      name="area"
+                      placeholder="Digite a área de atuação"
                     />
                   </div>
-                  <button type="submit" class="btn btn-success">
+                  <div class="form-group">
+                    <label>Competências</label>
+                    <div class="competency-input-container">
+                      <ul
+                        id="competencyList"
+                        class="d-flex flex-wrap mb-0 p-0"
+                      ></ul>
+                      <input
+                        type="text"
+                        id="competencyInput"
+                        class="competency-input"
+                        name="competency"
+                        placeholder="Digite uma competência e pressione Enter"
+                      />
+                    </div>
+                  </div>
+                  <button onclick="createTeacher()" class="btn btn-success">
                     Adicionar
-                  </button>
-                  <button
-                    type="reset"
-                    class="btn btn-danger"
-                    data-bs-dismiss="modal"
-                  >
-                    Cancelar
                   </button>
                 </form>
               </div>
@@ -149,7 +144,7 @@
           class="form-control my-3 w-25 position-right"
           id="myInput"
           type="text"
-          placeholder="Nome do usuário"
+          placeholder="Nome do professor"
         />
       </div>
 
@@ -158,24 +153,22 @@
           <tr>
             <th scope="col">Id</th>
             <th scope="col">Nome</th>
-            <th scope="col">Email</th>
-            <th scope="col">Administrador</th>
-            <th scope="col">Status</th>
+            <th scope="col">Formação</th>
+            <th scope="col">Area de atuação</th>
+            <th scope="col">Competencias</th>
           </tr>
         </thead>
         <tbody id="myTable">
-          {% for user in users %}
+          {% for teacher in teachers %}
           <tr>
-            <th scope="row">{{user.id}}</th>
-            <td>{{user.username}}</td>
-            <td>{{user.email}}</td>
-            <td>{% if user.is_superuser %} Sim {% else %} Não {% endif %}</td>
+            <th scope="row">{{teacher.id}}</th>
+            <td>{{teacher.name}}</td>
+            <td>{{teacher.education}}</td>
+            <td>{{teacher.area}}</td>
             <td>
-              {% if user.is_active %}
-              <div class="badge badge-pill badge-success p-2">Habilitado</div>
-              {% else %}
-              <div class="badge badge-pill badge-danger p-2">Desabilitado</div>
-              {% endif %}
+                {% for items in teacher.competency %}
+                   <div class="badge badge-pill badge-success p-2">{{items}}</div>
+                {% endfor %}
             </td>
           </tr>
           {% endfor %}
@@ -184,6 +177,16 @@
     </div>
 
     <script>
+      var competency = []
+      
+
+
+        function createTeacher(){
+            document.getElementById("competencyInput").value = competency
+        }
+
+
+
       $(document).ready(function () {
         $("#myInput").on("keyup", function () {
           var value = $(this).val().toLowerCase();
@@ -192,6 +195,37 @@
           });
         });
       });
+
+      document
+        .getElementById("competencyInput")
+        .addEventListener("keypress", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            addCompetency();
+          }
+        });
+
+      function addCompetency() {
+        let inputElement = document.getElementById("competencyInput");
+        let inputValue = inputElement.value.trim();
+
+        if (inputValue !== "") {
+            competency.push(inputValue)
+            console.log(competency);
+          let newItem = document.createElement("li");
+          newItem.classList.add("competency-badge", "badge");
+          newItem.innerHTML = `${inputValue} <span class="close">&times;</span>`;
+
+          newItem
+            .querySelector(".close")
+            .addEventListener("click", function () {
+              this.parentElement.remove();
+            });
+
+          document.getElementById("competencyList").appendChild(newItem);
+          inputElement.value = "";
+        }
+      }
     </script>
   </body>
 </html>

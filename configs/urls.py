@@ -7,8 +7,17 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('send_message/', views.send_message, name='send_message'),
     path('accounts/', include('accounts.urls')),
+    
+    
     path('list-users/', views.list_users, name='list-users'),
+    path('list-teachers/', views.list_teachers, name='list-teachers'),
+    
+    
+    path('briefing/', views.form_briefing, name='briefing'),
+
+    
     path('create-user/', views.create_user, name='create-user'),
+    path('create-teacher/', views.create_teacher, name='create-teacher'),
     path('change-password/', views.update_password, name='change_password'),
 
 ]

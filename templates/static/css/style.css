@@ -11,21 +11,53 @@
 
 body {
     background-color: #f8f9fa;
+    height: 100vh;
 }
+
+
+.main-container{
+    display: flex;
+}
+
+
+.option-card {
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.message-container {
+    margin-top: 10px;
+}
+
+.options {
+    margin-top: 10px;
+}
+
+
 .navbar {
-    background-color: #0149b8;
+    background-color: #8f8585ad;
 }
 .navbar .nav-link {
     color: white !important;
 }
 .aside-options {
-    position: fixed;
-    width: 300px;
-    height: 100%;
-    background-color: #8f8585ad;
+    /* position: fixed; */
+    width: 250px;
+    /* max-height: 95%; */
+    background-color: #e9ecef;
     color: white;
     padding: 15px;
     overflow-y: auto;
+}
+
+
+.aside-options > h5{
+    color: black;
+}
+
+.option-card{
+    background-color: #0149b8 !important;
+    margin:5px !important;
 }
 
 .card{
@@ -35,6 +67,8 @@ body {
     -webkit-line-clamp: 4;
     overflow: hidden;
     text-overflow: ellipsis;
+    background-color: #e9ecef;
+    border: none;
 }
 
 .card  p{
@@ -46,17 +80,17 @@ body {
 
 .chat-container {
     width: 60%;
+    height: 83%;
     max-width: 1000px;
     background: white;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    transform: translate(0%, 10%);
     border: 1px solid rgba(0, 0, 0, 0.205);
+    margin: 40px auto;
 }
 .chat-box {
-    height: 80%;
-    height: 600px;
+    height: 75vh;
     overflow-y: scroll;
     padding: 15px;
     background-color: #e9ecef;
@@ -103,4 +137,44 @@ body {
 .input-group-append .btn {
     background-color: #0149b8;
     border-color: #0149b8;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* ################ LISTAR PROFESSORES ################ */
+.competency-input-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    padding: .375rem .75rem;
+}
+
+.competency-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    min-width: 120px;
+}
+
+.competency-badge {
+    margin: 2px 5px;
+    background-color: #ee730b;
+    color: #fff;
+    padding: .25em .5em;
+    border-radius: .25rem;
+}
+
+.competency-badge .close {
+    margin-left: .5em;
+    cursor: pointer;
 }
