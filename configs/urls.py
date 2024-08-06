@@ -14,6 +14,9 @@ urlpatterns = [
     
     
     path('briefing/', views.form_briefing, name='briefing'),
+   
+   
+    path('download_doc/', views.download_doc, name='download_doc'),
 
     
     path('create-user/', views.create_user, name='create-user'),

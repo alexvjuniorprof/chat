@@ -23,6 +23,11 @@ body {
 .option-card {
     cursor: pointer;
     margin-bottom: 10px;
+    border-radius: 10px;
+}
+
+.card-body{
+    padding: 0.8rem !important;
 }
 
 .message-container {
@@ -105,6 +110,8 @@ body {
     text-align: left;
     display: flex;
 }
+
+
 
 
 .bot-img{
