@@ -1,12 +1,53 @@
+import json
 from django.shortcuts import render, redirect
-from django.http import JsonResponse
+from django.http import FileResponse, HttpResponse, JsonResponse
 import google.generativeai as genai
 from django.contrib.auth.decorators import login_required
+
 
 from .decorators import update_password
 from django.contrib.auth import login
 from .models import CustomUser, Teacher
 from questions.models import Question
+
+import os
+from docx import Document
+import time
+
+
+
+# Gerar Documento
+replacements = {
+    "{data}": "data",
+    "{destinatario}": "destinatario",
+    "{titulo}": "titulo",
+    "{objetivo}": "objetivo",
+    "{periodo}": "periodo",
+    "{carga_horaria_total}": "carga_horaria_total",
+    "{valor_investimento}": "valor_investimento",
+    # "{detalhamento_proposta}": "detalhamento_proposta",
+}
+
+def replace_text_in_doc(doc, replacements, data_json):
+    for paragraph in doc.paragraphs:
+        for key, value in replacements.items():
+            if key in paragraph.text:
+                paragraph.text = paragraph.text.replace(key, data_json[value])
+        
+
+
+
+def generate_doc(data_json):
+    doc = Document("modelo.docx")
+
+    replace_text_in_doc(doc, replacements, data_json)
+    file_name = f"{time.time()}.docx"
+    doc.save(file_name)
+    # with open(file_name, "rb") as file:
+    content_file = open(file_name, "rb")
+    # os.remove(file_name)
+    return content_file
+
 
 
 # Configurar a API do Google Gemini
@@ -107,4 +148,14 @@ def create_teacher(request):
 def form_briefing(request):
     return render(request, 'chatbot/briefing.html')    
     
+    
+    
+def download_doc(request):
+    if request.method == "POST":
+        proposal = request.POST.get('proposal')
+        proposal_json = json.loads(proposal)
+        doc = generate_doc(proposal_json)
+        return FileResponse(doc)
+
+    return HttpResponse(status=405) 
     

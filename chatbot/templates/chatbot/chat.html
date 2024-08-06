@@ -1,189 +1,412 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chatbot Interface</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-light px-4">
-    <a class="navbar-brand text-white" href="{% url 'chat_view' %}"><img class="logo" src="{% static 'img/logo-transparent.png' %}" alt=""></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light px-4">
+      <a class="navbar-brand text-white" href="{% url 'chat_view' %}"
+        ><img class="logo" src="{% static 'img/logo-transparent.png' %}" alt=""
+      /></a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
         <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
-            {% if request.user.is_superuser %}
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{% url 'list-teachers' %}">Listar Professores</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{% url 'list-users' %}">Listar Usuários</a>
-            </li>
-            {% endif %}
-            <li class="nav-item">
-                <a class="nav-link text-white" href="{% url 'logout' %}">Sair</a>
-            </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" id="downloadDoc"
+              >Gerar proposta</a
+            >
+          {% if request.user.is_superuser %}
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{% url 'list-teachers' %}"
+              >Listar Professores</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{% url 'list-users' %}"
+              >Listar Usuários</a
+            >
+          </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{% url 'logout' %}">Sair</a>
+          </li>
         </ul>
-    </div>
-</nav>
+      </div>
+    </nav>
 
-<div class="main-container">
-    <div class="aside-options">
-        <form action="">
-            <input class="form-control my-3" id="myInput" type="text" placeholder="Buscar Proposta" />
-        </form>
-        <h5>Últimas conversas</h5>
-        <div class="card">
-            <p>Título da proposta</p>
-        </div>
-    </div>
 
-    <div class="chat-container">
-        <div class="chat-box" id="chatbox">
-            <div class="chat-message bot">
-                <div class="bot-img"></div>
-                <div class="message">
-                    <b>Bem-vindo à GeInA, sua assistente de propostas corporativas!</b>
-                    <p>Olá! Estou aqui para ajudar no processo de criação da sua proposta corporativa. Antes de começarmos, preciso de algumas informações importantes. Podemos iniciar?</p>
-                    <button class="btn btn-primary" id="start">Iniciar</button>
-                </div>
+
+
+
+
+
+<!-- Modal da proposta -->
+<div class="modal fade" id="proposalModal" tabindex="-1" role="dialog" aria-labelledby="proposalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content p-5">
+            <div class="modal-header">
+                <h5 class="modal-title" id="proposalModalLabel">Proposta de Treinamento</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-        </div>
-        <div class="input-group my-2 p-2">
-            <input type="text" class="form-control" placeholder="Digite sua mensagem" id="message" disabled>
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="button" id="send" disabled>Enviar</button>
+            <div class="modal-body">
+                <h5>Data</h5>
+                <p id="proposalDate"></p>
+
+                <h5>Destinatário</h5>
+                <p id="proposalRecipient"></p>
+
+                <h5>Título</h5>
+                <p id="proposalTitle"></p>
+
+                <h5>Objetivo</h5>
+                <p id="proposalObjective"></p>
+
+                <h5>Período de Realização</h5>
+                <p id="proposalPeriod"></p>
+
+                <h5>Detalhamento da Proposta</h5>
+                <div id="proposalDetails"></div>
+
+                <h5>Carga Horária Total</h5>
+                <p id="proposalTotalHours"></p>
+
+                <h5>Valor do Investimento</h5>
+                <p id="proposalInvestment"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
 </div>
 
-<script>
+
+
+
     
-    $(document).ready(function() {
-    var response = [];
-    var currentQuestion = 0;
-    var questions = [
-        {% for question in array_questions %}
-            "{{ question }}",
-        {% endfor %}
-    ];
 
-    function askQuestion() {
-        $('#options').remove(); // Remove previous options if any
-        if (currentQuestion < questions.length) {
-            $('#chatbox').append(`
-                <div class="chat-message bot">
-                    <div class="bot-img"></div>
-                    <div class="message">
-                        ${questions[currentQuestion]}
-                        <div id="options" class="options"></div>        
-                    </div>
-                </div>
-            `);
 
-            if (currentQuestion === 2 || currentQuestion === 3) {
-                createOptions();
-            } else {
-                $('#options').empty(); 
-            }
-            var chatBox = document.getElementById('chatbox');
-            chatBox.scrollTop = chatBox.scrollHeight;
+    <div class="main-container">
+      <div class="aside-options">
+        <form action="">
+          <input
+            class="form-control my-3"
+            id="myInput"
+            type="text"
+            placeholder="Buscar Proposta"
+          />
+        </form>
+        <h5>Últimas conversas</h5>
+        <div class="card">
+          <p>Título da proposta</p>
+        </div>
+      </div>
+
+      <div class="chat-container">
+        <div class="chat-box" id="chatbox">
+          <div class="chat-message bot">
+            <div class="bot-img"></div>
+            <div class="message d-inline">
+              <b
+                >Bem-vindo à GeInA, sua assistente de propostas corporativas!</b
+              >
+              <p>
+                Olá! Estou aqui para ajudar no processo de criação da sua
+                proposta corporativa. Antes de começarmos, preciso de algumas
+                informações importantes. Podemos iniciar?
+              </p>
+              <button class="btn btn-primary" id="start">Iniciar</button>
+            </div>
+          </div>
+        </div>
+        <div class="input-group my-2 p-2">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Digite sua mensagem"
+            id="message"
+            disabled
+          />
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="send" disabled>
+              Enviar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+
+        var proposal;
+        var response = [];
+          $(document).ready(function() {
+          var currentQuestion = 0;
+          var questions = [
+              {% for question in array_questions %}
+                  "{{ question }}",
+              {% endfor %}
+          ];
+
+          function askQuestion() {
+              $('#options').remove();
+              if (currentQuestion < questions.length) {
+                  $('#chatbox').append(`
+                      <div class="chat-message bot">
+                          <div class="bot-img"></div>
+                          <div class="message">
+                              ${questions[currentQuestion]}
+                              <div id="options" class="options"></div>
+                          </div>
+                      </div>
+                  `);
+
+                  if (currentQuestion === 2 || currentQuestion === 3) {
+                      $('#message').prop('disabled', true);
+                      $('#send').prop('disabled', true);
+                      createOptions();
+                  } else {
+                      $('#message').prop('disabled', false);
+                      $('#send').prop('disabled', false);
+                      $('#options').empty();
+                  }
+                  var chatBox = document.getElementById('chatbox');
+                  chatBox.scrollTop = chatBox.scrollHeight;
+              }
+          }
+
+          function createOptions() {
+              var options = [];
+              if (currentQuestion === 2) {
+                  options = ["Público", "Privado"];
+              } else if (currentQuestion === 3) {
+                  options = ["Ação extensiva", "Curso", "Consultoria"];
+              }
+              var optionsHtml = '';
+              options.forEach(function(option) {
+                  optionsHtml += `<div class="option-card"><div class="card-body">${option}</div></div>`;
+              });
+              $('#options').html(optionsHtml);
+
+              $('.option-card').click(function() {
+                  var selectedOption = $(this).text();
+                  $('#chatbox').append('<div class="chat-message user"><div class="message">' + selectedOption + '</div></div>');
+                  response.push(selectedOption);
+                  $('#options').empty();
+                  currentQuestion++;
+                  askQuestion();
+              });
+          }
+
+          $('#start').click(function() {
+              $('#message').prop('disabled', false);
+              $('#send').prop('disabled', false);
+              $(this).hide();
+              askQuestion();
+          });
+
+          $('#send').click(function() {
+              sendMessage();
+          });
+
+          $('#message').keypress(function(event) {
+              if (event.which == 13) {
+                  sendMessage();
+                  event.preventDefault();
+              }
+          });
+
+            
+
+
+
+          function updateProposalModal(proposal) {
+          $('#proposalDate').text(proposal.data);
+          $('#proposalRecipient').text(proposal.destinatario);
+          $('#proposalTitle').text(proposal.titulo);
+          $('#proposalObjective').text(proposal.objetivo);
+          $('#proposalPeriod').text(proposal.periodo);
+
+          var proposalDetailsHtml = `
+              <table class="table table-bordered">
+                  <thead>
+                      <tr>
+                          <th>Título da Etapa</th>
+                          <th>Carga Horária</th>
+                          <th>Público Alvo</th>
+                          <th>Objetivo da Etapa</th>
+                          <th>Conteúdo Programático</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+          `;
+
+          proposal.detalhamento_proposta.forEach(function(etapa) {
+              proposalDetailsHtml += `
+                  <tr>
+                      <td>${etapa.titulo_etapa}</td>
+                      <td>${etapa.carga_horaria_necessaria}</td>
+                      <td>${etapa.publico_alvo}</td>
+                      <td>${etapa.objetivo_da_etapa}</td>
+                      <td>
+                              ${etapa.conteudo_programatico.map(conteudo => `<li>${conteudo}</li>`).join('')}
+                      </td>
+                  </tr>
+              `;
+          });
+
+    proposalDetailsHtml += `
+            </tbody>
+        </table>
+    `;
+
+    $('#proposalDetails').html(proposalDetailsHtml);
+
+    $('#proposalTotalHours').text(proposal.carga_horaria_total);
+    $('#proposalInvestment').text(proposal.valor_investimento);
+}
+
+
+
+
+
+$('#downloadDoc').click(function() {
+    var proposal = {
+        "data": "teste",
+        "destinatario": "teste",
+        "titulo": "teste",
+        "objetivo": "teste",
+        "periodo": "Teste",
+        "carga_horaria_total": "teste",
+        "valor_investimento": "Teste",
+    };
+
+    $.ajax({
+        url: "{% url 'download_doc' %}",
+        type: "POST",
+        data: {
+            'proposal': JSON.stringify(proposal),
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        xhrFields: {
+            responseType: 'blob' 
+        },
+        success: function(blob) {
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'proposta.doc';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            console.log('Download gerado com sucesso.');
+        },
+        error: function(xhr, status, error) {
+            console.log(`Erro: ${error}`);
         }
-    }
-
-    function createOptions() {
-        var options = [];
-        if (currentQuestion === 2) {
-            options = ["Público", "Privado"];
-        } else if (currentQuestion === 3) {
-            options = ["Ação extensiva", "Curso"];
-        }
-        var optionsHtml = '';
-        options.forEach(function(option) {
-            optionsHtml += `<div class="option-card"><div class="card-body">${option}</div></div>`;
-        });
-        $('#options').html(optionsHtml);
-
-        $('.option-card').click(function() {
-            var selectedOption = $(this).text();
-            $('#chatbox').append('<div class="chat-message user"><div class="message">' + selectedOption + '</div></div>');
-            response.push(selectedOption);
-            $('#options').empty();
-            currentQuestion++;
-            askQuestion();
-        });
-    }
-
-    $('#start').click(function() {
-        $('#message').prop('disabled', false);
-        $('#send').prop('disabled', false);
-        $(this).hide();
-        askQuestion();
     });
-
-    $('#send').click(function() {
-        sendMessage();
-    });
-
-    $('#message').keypress(function(event) {
-        if (event.which == 13) {
-            sendMessage();
-            event.preventDefault();
-        }
-    });
-
-    function sendMessage() {
-        var message = $('#message').val();
-        if (message.trim() === '') return;
-
-        $('#chatbox').append('<div class="chat-message user"><div class="message">' + message + '</div></div>');
-        response.push(message);
-        $('#message').val('');
-
-        if (currentQuestion < questions.length - 1) {
-            currentQuestion++;
-            askQuestion();
-        } else {
-            var prompt = `
-            Crie uma proposta de treinamento profissional e abrangente para a prestação de serviços ou produtos a um cliente com o nome ${response[2]}. 
-            A proposta deve se basear nos seguintes parametros (IMPORTANTE: Nenhum parametro pode ser retornado vazio):
-            data:{}
-            destinatário:${response[1]}
-            titulo: ${response[5]}(Não utilizar os termos a seguir no titulo "Qualificação Profissional, Técnico, Graduação ou Pós-Graduação")  
-            Objetivo:${response[6]}(essa etapa precisa ser detalhada em um parágrafo, utilizando o resumo informado. Importante utilizar um ou mais verbos a seguir para dar enfase no objetivo: difundir, divulgar, propagar, repassar, orientar, apresentar,aprimorar, melhorar, otimizar, complementar,
-            ampliar, potencializar, acrescentar, amplificar, aumentar, incrementar, práticar ,levantar, mapear, atuar, realizar)
-            Periodo de realização:{}(gerar com base na proposta)
-            Detalhamento da proposta: Essa etapa precisa ser detalhada levando em consideração o titulo e objetivo.
-            Importante!!! - O detalhamento da proposta deve ser dividido em etapas de dependendo da carga horaria e também utilizar a seguinte estrura: Titulo da etapa, carga horaria necessária, público alvo, objetivo da etapa, conteudo programatico(em lista)
-            Carga horária total: {}
-            Valor do investimento: {}
-            Importante que a resposta seja um objeto json sem as ""json"".
-            `;
-
-
-            $('#chatbox').append('<div class="chat-message bot"><div class="bot-img"></div><div class="message">Gerando Proposta...</div></div>');
-            $.post("{% url 'send_message' %}", {
-                'message': prompt,
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
-            }, function(data) {
-                $('.chat-message.bot:last-child .message').html(data.response);
-                var chatBox = document.getElementById('chatbox');
-                chatBox.scrollTop = chatBox.scrollHeight;
-            });
-        }
-    }
-
 });
-</script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+
+
+
+          function sendMessage() {
+            
+              var message = $('#message').val();
+              if (message.trim() === '') return;
+
+              $('#chatbox').append('<div class="chat-message user"><div class="message">' + message + '</div></div>');
+              response.push(message);
+              $('#message').val('');
+
+              if (currentQuestion < questions.length - 1) {
+                  currentQuestion++;
+                  askQuestion();
+              } else {
+                  var prompt = `
+                  Crie uma proposta de treinamento profissional e abrangente para a prestação de serviços ou produtos a um cliente com o nome ${response[2]}.
+                  A proposta deve se basear nos seguintes parametros (IMPORTANTE: Nenhum parametro pode ser retornado vazio):
+                  data:{}
+                  destinatário:${response[0]}
+                  titulo: ${response[5]}(Não utilizar os termos a seguir no titulo "Qualificação Profissional, Técnico, Graduação ou Pós-Graduação")
+                  Objetivo:${response[6]}(essa etapa precisa ser detalhada em um parágrafo, utilizando o resumo informado. Importante utilizar um ou mais verbos a seguir para dar enfase no objetivo: difundir, divulgar, propagar, repassar, orientar, apresentar,aprimorar, melhorar, otimizar, complementar,
+                  ampliar, potencializar, acrescentar, amplificar, aumentar, incrementar, práticar ,levantar, mapear, atuar, realizar)
+                  Periodo de realização:{}(gerar com base na proposta)
+                  Detalhamento da proposta: Essa etapa precisa ser detalhada levando em consideração o titulo e objetivo.
+                  Importante!!! - O detalhamento da proposta deve ser dividido em etapas de dependendo da carga horaria e também utilizar a seguinte estrura: Titulo da etapa, carga horaria necessária, público alvo, objetivo da etapa, conteudo programatico(em lista)
+                  Carga horária total: {}
+                  Valor do investimento: {}
+                  Importante que a resposta seja um objeto json sem as ""json"". O json deve sempre conter as seguinte estrurtura de  chaves: 
+                  "data": "",
+                  "destinatario": "",
+                  "titulo": "",
+                  "objetivo": "",
+                  "periodo": "",
+                  "detalhamento_proposta": [
+                      {
+                          "titulo_etapa": "",
+                          "carga_horaria_necessaria": "",
+                          "publico_alvo": "",
+                          "objetivo_da_etapa": "",
+                          "conteudo_programatico": [
+                          ],
+                      },
+                  ],
+                  "carga_horaria_total": "",
+                  "valor_investimento": "",
+}
+                  `;
+
+
+                  $('#chatbox').append('<div class="chat-message bot"><div class="bot-img"></div><div class="message">Gerando Proposta...</div></div>');
+                  $.post("{% url 'send_message' %}", {
+                      'message': prompt,
+                      'csrfmiddlewaretoken': '{{ csrf_token }}'
+                  }, function(data) {
+                      proposal = JSON.parse(data.response)
+                      updateProposalModal(proposal)
+                      var optionsHtml = '';
+                      
+                      optionsHtml = `
+                        <div class="container d-flex">
+                            <div class="option-card"><button class="card-body btn btn-info type="button" data-toggle="modal" data-target="#proposalModal">Visualizar proposta</button></div>
+                            <div class="option-card"><div class="card-body btn btn-warning">Editar Proposta</div></div>
+                            <div class="option-card"><div class="card-body btn btn-success">Exportar Proposta</div></div>    
+                        </div>
+                      `;
+                    
+                      $('.chat-message.bot:last-child .message').html(optionsHtml);
+              
+                  });
+              }
+          }
+
+      });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
 </html>
