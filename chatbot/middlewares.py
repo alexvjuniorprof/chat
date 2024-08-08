@@ -7,9 +7,9 @@ class CleanupFileMiddleware:
     def __call__(self, request):
         response = self.get_response(request)
         
-        if 'File-Path' in response:
-            file_path = response['File-Path']
-            if os.path.exists(file_path):
-                os.remove(file_path)
+        # if 'File-Path' in response:
+        #     file_path = response['File-Path']
+        #     if os.path.exists(file_path):
+        #         os.remove(file_path)
         
         return response
