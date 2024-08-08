@@ -291,22 +291,13 @@
 
 
 
-$('#downloadDoc').click(function() {
-    var proposal = {
-        "data": "teste",
-        "destinatario": "teste",
-        "titulo": "teste",
-        "objetivo": "teste",
-        "periodo": "Teste",
-        "carga_horaria_total": "teste",
-        "valor_investimento": "Teste",
-    };
-
+$(document).on('click', '#exportProposalBtn', function() {
+  
     $.ajax({
         url: "{% url 'download_doc' %}",
         type: "POST",
         data: {
-            'proposal': JSON.stringify(proposal),
+            'proposal': proposal,
             'csrfmiddlewaretoken': '{{ csrf_token }}'
         },
         xhrFields: {
@@ -332,6 +323,7 @@ $('#downloadDoc').click(function() {
 
 
 
+
           function sendMessage() {
             
               var message = $('#message').val();
@@ -346,7 +338,7 @@ $('#downloadDoc').click(function() {
                   askQuestion();
               } else {
                   var prompt = `
-                  Crie uma proposta de treinamento profissional e abrangente para a prestação de serviços ou produtos a um cliente com o nome ${response[2]}.
+                  Crie uma proposta de treinamento profissional e abrangente para a prestação de serviços ou produtos a um cliente com o nome ${response[1]}.
                   A proposta deve se basear nos seguintes parametros (IMPORTANTE: Nenhum parametro pode ser retornado vazio):
                   data:{}
                   destinatário:${response[0]}
@@ -360,6 +352,7 @@ $('#downloadDoc').click(function() {
                   Valor do investimento: {}
                   Importante que a resposta seja um objeto json sem as ""json"". O json deve sempre conter as seguinte estrurtura de  chaves: 
                   "data": "",
+                  "cliente": "",
                   "destinatario": "",
                   "titulo": "",
                   "objetivo": "",
@@ -385,15 +378,15 @@ $('#downloadDoc').click(function() {
                       'message': prompt,
                       'csrfmiddlewaretoken': '{{ csrf_token }}'
                   }, function(data) {
-                      proposal = JSON.parse(data.response)
-                      updateProposalModal(proposal)
+                      proposal = data.response
+                      updateProposalModal(JSON.parse(proposal))
                       var optionsHtml = '';
                       
                       optionsHtml = `
                         <div class="container d-flex">
                             <div class="option-card"><button class="card-body btn btn-info type="button" data-toggle="modal" data-target="#proposalModal">Visualizar proposta</button></div>
                             <div class="option-card"><div class="card-body btn btn-warning">Editar Proposta</div></div>
-                            <div class="option-card"><div class="card-body btn btn-success">Exportar Proposta</div></div>    
+                            <div class="option-card" id="exportProposalBtn"><div class="card-body btn btn-success">Exportar Proposta</div></div>    
                         </div>
                       `;
                     
