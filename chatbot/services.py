@@ -58,6 +58,7 @@ data = {
 
 REPLACEMENTS = {
     "{data}": "data",
+    "{cliente}": "cliente",
     "{destinatario}": "destinatario",
     "{titulo}": "titulo",
     "{objetivo}": "objetivo",
