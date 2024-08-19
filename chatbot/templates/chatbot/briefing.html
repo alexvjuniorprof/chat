@@ -13,21 +13,29 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light px-4">
-        <a class="navbar-brand text-white" href="{% url 'chat_view' %}"><img class="logo" src="{% static 'img/logo-transparent.png' %}" alt=""></a>
+        <a class="navbar-brand text-white" href="#"><img class="logo" src="{% static 'img/logo-transparent.png' %}" alt=""></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
     </nav>
     <div class="container w-50 my-5">
         <h1 class="mb-4">Formulário para geração de Proposta</h1>
-      <form action="">
+      <form method="POST"> {% csrf_token %}
+        <div class="form-group">
+          <label for="">Telefone</label>
+          <input type="text" class="form-control" name="phone"/>
+        </div>
+        <div class="form-group">
+          <label for="">Email</label>
+          <input type="text" class="form-control" name="email" />
+        </div>
         <div class="form-group">
           <label for="">Empresa</label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" name="question_1" />
         </div>
         <div class="form-group">
           <label for="">Ramo</label>
-          <select class="form-control" name="" id="fork">
+          <select class="form-control" id="fork">
             <option value="">---</option>
             <option value="1">Indústria</option>
             <option value="2">Comércio</option>
@@ -36,91 +44,91 @@
         </div>
         <div class="form-group">
           <label for="">Atividades</label>
-          <select class="form-control" name="" id="activity" disabled>
+          <select class="form-control" name="question_2" id="activity" disabled>
             <option value="" selected>---</option>
           </select>
         </div>
         <div class="form-group">
           <label for="">Principal negócio</label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" name="question_3" />
         </div>
         <div class="form-group">
           <label for="">Colaboradores</label>
-          <select class="form-control" name="" id="employers">
-            <option value="1">Menos de 50</option>
-            <option value="2">Entre 50 e 100</option>
-            <option value="3">Entre 100 e 500</option>
-            <option value="4">Entre 500 e 1000</option>
-            <option value="5">Entre 1000 e 2000</option>
-            <option value="6">Mais de 2000</option>
+          <select class="form-control" id="employers" name="question_4">
+            <option value="Menos de 50">Menos de 50</option>
+            <option value="Entre 50 e 100">Entre 50 e 100</option>
+            <option value="Entre 100 e 500">Entre 100 e 500</option>
+            <option value="Entre 500 e 1000">Entre 500 e 1000</option>
+            <option value="Entre 1000 e 2000">Entre 1000 e 2000</option>
+            <option value="Mais de 2000">Mais de 2000</option>
           </select>
         </div>
         <div class="form-group">
           <label for="">Qual a missão, visão e valores da empresa?</label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" name="question_5" />
         </div>
         <div class="form-group">
           <label for="">Quais os diferenciais essenciais da empresa?</label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" name="question_6" />
         </div>
         <div class="form-group">
           <label for=""
             >Quais suas principais necessidades? Como podemos ajuda-los?</label
           >
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" name="question_7" />
         </div>
         <div class="form-group">
           <label for=""
             >Essas necessidades foram geradas em função de algum problema em
             especial? Como surgiu essa demanda?</label
           >
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" name="question_8" />
         </div>
         <div class="form-group">
           <label for=""
             >Além das necessidades relatadas, existe alguma outra que você
             gostaria de relatar?</label
           >
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" name="question_9"/>
         </div>
         <div class="form-group">
           <label for="">Qual o objetivo principal da capacitação?</label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" name="question_10" />
         </div>
         <div class="form-group">
           <label for=""
             >Quais os principais temas que você acredita que devem ser
             trabalhados nesta formação?
           </label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" name="question_11" />
         </div>
         <div class="form-group">
           <label for=""
             >Quem deverá participar da capacitação? (público-alvo) Quantas
             pessoas aproximadamente?</label
           >
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" name="question_12" />
         </div>
         <div class="form-group">
           <label for=""
             >Qual o nível médio de formação(escolaridade) do
             público-alvo?</label
           >
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" name="question_13"/>
         </div>
         <div class="form-group">
           <label for="">
             A capacitação fará parte de um programa de treinamento?
           </label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" name="question_14" />
         </div>
         <div class="form-group">
           <label for="">
             Outras observações:
           </label>
-          <textarea name="" class="form-control" id=""></textarea>
+          <textarea class="form-control" name="question_15" id=""></textarea>
         </div>
-        <button class="btn btn-success mb-5">Gerar Proposta</button>
+        <button type="submit" class="btn btn-success mb-5">Gerar Proposta</button>
       </form>
     </div>
 

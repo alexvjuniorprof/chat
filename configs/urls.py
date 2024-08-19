@@ -11,6 +11,10 @@ urlpatterns = [
     
     path('list-users/', views.list_users, name='list-users'),
     path('list-teachers/', views.list_teachers, name='list-teachers'),
+
+
+    path('list-proposals/', views.list_proposals, name='list-proposals'),
+    path('update-proposal/', views.update_proposal, name='update-proposal'),
     
     
     path('briefing/', views.form_briefing, name='briefing'),
