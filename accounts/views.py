@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib import auth
+from django.contrib import auth, messages
 
 
 
@@ -16,6 +16,7 @@ def login(request):
             return redirect("chat_view")
 
         else:
+            messages.info(request, 'Usuário ou Senha incorretos.')
             return redirect("login")
         
     else:

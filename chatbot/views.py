@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 
 from .decorators import update_password
 from django.contrib.auth import login
-from .models import CustomUser, Teacher
+from .models import CustomUser, Teacher, Briefing
 from questions.models import Question
 
 from django.views.decorators.csrf import csrf_exempt
@@ -72,13 +72,13 @@ def update_password(request):
 
 @login_required(redirect_field_name='login')
 def list_users(request):
-    users = CustomUser.objects.all()
+    users = CustomUser.objects.all().order_by('-id')
     return render(request, 'chatbot/list_users.html', {'users':users})
 
 
 @login_required(redirect_field_name='login')
 def list_teachers(request):
-    teachers = Teacher.objects.all()
+    teachers = Teacher.objects.all().order_by('-id')
     
     for teacher in teachers:
         teacher.competency = teacher.competency.split(',')
@@ -109,10 +109,6 @@ def create_teacher(request):
     return redirect('list-teachers')
     
     
-
-def form_briefing(request):
-    return render(request, 'chatbot/briefing.html')    
-    
     
 @csrf_exempt
 def download_doc(request):
@@ -129,3 +125,91 @@ def download_doc(request):
 
     return HttpResponse(status=405) 
     
+    
+
+
+def list_proposals(request):
+    proposals = Briefing.objects.all().order_by('-id')
+    return render(request, 'chatbot/list_proposals.html', {'proposals':proposals})
+
+
+
+def update_proposal(request):
+
+    id = request.POST.get('id')
+    question_16 = request.POST.get('question_16')
+    question_17 = request.POST.get('question_17')
+    question_18 = request.POST.get('question_18')
+    question_19 = request.POST.get('question_19')
+    question_20 = request.POST.get('question_20')
+    question_21 = request.POST.get('question_21')
+    question_22 = request.POST.get('question_22')
+    question_23 = request.POST.get('question_23')
+    question_24 = request.POST.get('question_24')
+
+
+
+    proposal = Briefing.objects.get(id=id)
+    proposal.question_16 = question_16
+    proposal.question_17 = question_17
+    proposal.question_18 = question_18
+    proposal.question_19 = question_19
+    proposal.question_20 = question_20
+    proposal.question_21 = question_21
+    proposal.question_22 = question_22
+    proposal.question_23 = question_23
+    proposal.question_24 = question_24
+    proposal.completed = True
+    proposal.save()
+    print(question_24)
+    return HttpResponse("Proposta atualizada.")
+
+
+
+def form_briefing(request):
+
+    if request.method == 'POST':
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+        question_1 = request.POST.get('question_1')
+        question_2 = request.POST.get('question_2')
+        question_3 = request.POST.get('question_3')
+        question_4 = request.POST.get('question_4')
+        question_5 = request.POST.get('question_5')
+        question_6 = request.POST.get('question_6')
+        question_7 = request.POST.get('question_7')
+        question_8 = request.POST.get('question_8')
+        question_9 = request.POST.get('question_9')
+        question_10 = request.POST.get('question_10')
+        question_11 = request.POST.get('question_11')
+        question_12 = request.POST.get('question_12')
+        question_13 = request.POST.get('question_13')
+        question_14 = request.POST.get('question_14')
+        question_15 = request.POST.get('question_15')
+
+        Briefing.objects.create(
+            phone=phone,
+            email=email,
+            question_1=question_1,
+            question_2=question_2,
+            question_3=question_3,
+            question_4=question_4,
+            question_5=question_5,
+            question_6=question_6,
+            question_7=question_7,
+            question_8=question_8,
+            question_9=question_9,
+            question_10=question_10,
+            question_11=question_11,
+            question_12=question_12,
+            question_13=question_13,
+            question_14=question_14,
+            question_15=question_15
+        )
+
+        return redirect('briefing')
+        
+
+
+    else:
+        return render(request, 'chatbot/briefing.html')    

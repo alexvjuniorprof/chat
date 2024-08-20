@@ -1,231 +1,189 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lista de professores</title>
-    <link
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
-      crossorigin="anonymous"
-    ></script>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-  </head>
+{% extends 'base.html' %}
 
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light px-4">
-      <a class="navbar-brand text-white" href="{% url 'chat_view' %}"
-        ><img class="logo" src="{% static 'img/logo-transparent.png' %}" alt=""
-      /></a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-          {% if request.user.is_superuser %}
-          <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'list-teachers' %}"
-              >Listar Professores</a
-            >
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'list-users' %}"
-              >Listar Usuários</a
-            >
-          </li>
-          {% endif %}
-          <li class="nav-item">
-            <a class="nav-link text-white" href="{% url 'logout' %}">Sair</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-    <div class="container my-5">
-      <div class="container align-items-center d-flex justify-content-between">
-        <!-- Button trigger modal -->
-        <button
-          type="button"
-          class="btn btn-secondary"
-          style="height: 40px"
-          data-bs-toggle="modal"
-          data-bs-target="#exampleModal"
-        >
-          + Adicionar Professor
-        </button>
 
-        <!-- Modal -->
-        <div
-          class="modal fade"
-          id="exampleModal"
-          tabindex="-1"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog">
-            <div class="modal-content p-3">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">
-                  Novo Professor
-                </h1>
+{% block  main %}
+
+
+
+<div class="container my-5">
+  <div class="container align-items-center d-flex justify-content-between">
+    <!-- Button trigger modal -->
+    <button
+      type="button"
+      class="btn btn-secondary"
+      style="height: 40px"
+      data-bs-toggle="modal"
+      data-bs-target="#exampleModal"
+    >
+      + Adicionar Professor
+    </button>
+
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content p-3">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Novo Professor
+            </h1>
+          </div>
+          <div class="modal-body">
+            <form method="POST" action="{% url 'create-teacher' %}">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="teacherName">Nome do Professor</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="teacherName"
+                  name="name"
+                  placeholder="Digite o nome do professor"
+                required />
               </div>
-              <div class="modal-body">
-                <form method="POST" action="{% url 'create-teacher' %}">
-                  {% csrf_token %}
-                  <div class="form-group">
-                    <label for="teacherName">Nome do Professor</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="teacherName"
-                      name="name"
-                      placeholder="Digite o nome do professor"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="teacherEducation">Formação</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="teacherEducation"
-                      name="education"
-                      placeholder="Digite a formação"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="teacherArea">Área de Atuação</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="teacherArea"
-                      name="area"
-                      placeholder="Digite a área de atuação"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label>Competências</label>
-                    <div class="competency-input-container">
-                      <ul
-                        id="competencyList"
-                        class="d-flex flex-wrap mb-0 p-0"
-                      ></ul>
-                      <input
-                        type="text"
-                        id="competencyInput"
-                        class="competency-input"
-                        name="competency"
-                        placeholder="Digite uma competência e pressione Enter"
-                      />
-                    </div>
-                  </div>
-                  <button onclick="createTeacher()" class="btn btn-success">
-                    Adicionar
-                  </button>
-                </form>
+              <div class="form-group">
+                <label for="teacherEducation">Formação</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="teacherEducation"
+                  name="education"
+                  placeholder="Digite a formação"
+                required />
               </div>
-            </div>
+              <div class="form-group">
+                <label for="teacherArea">Área de Atuação</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="teacherArea"
+                  name="area"
+                  placeholder="Digite a área de atuação"
+                required />
+              </div>
+              <div class="form-group">
+                <label>Competências</label>
+                <div class="competency-input-container">
+                  <ul
+                    id="competencyList"
+                    class="d-flex flex-wrap mb-0 p-0"
+                  ></ul>
+                  <input
+                    type="text"
+                    id="competencyInput"
+                    class="competency-input"
+                    name="competency"
+                    placeholder="Digite uma competência e pressione Enter"
+                  required />
+                </div>
+              </div>
+              <button onclick="createTeacher()" class="btn btn-success">
+                Adicionar
+              </button>
+            </form>
           </div>
         </div>
-
-        <input
-          class="form-control my-3 w-25 position-right"
-          id="myInput"
-          type="text"
-          placeholder="Nome do professor"
-        />
       </div>
-
-      <table class="table">
-        <thead class="table-dark">
-          <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Nome</th>
-            <th scope="col">Formação</th>
-            <th scope="col">Area de atuação</th>
-            <th scope="col">Competencias</th>
-          </tr>
-        </thead>
-        <tbody id="myTable">
-          {% for teacher in teachers %}
-          <tr>
-            <th scope="row">{{teacher.id}}</th>
-            <td>{{teacher.name}}</td>
-            <td>{{teacher.education}}</td>
-            <td>{{teacher.area}}</td>
-            <td>
-                {% for items in teacher.competency %}
-                   <div class="badge badge-pill badge-success p-2">{{items}}</div>
-                {% endfor %}
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
     </div>
 
-    <script>
-      var competency = []
-      
+    <input
+      class="form-control my-3 w-25 position-right"
+      id="myInput"
+      type="text"
+      placeholder="Nome do professor"
+    />
+  </div>
+
+  <table class="table">
+    <thead class="table-dark">
+      <tr>
+        <th scope="col">Id</th>
+        <th scope="col">Nome</th>
+        <th scope="col">Formação</th>
+        <th scope="col">Area de atuação</th>
+        <th scope="col">Competencias</th>
+      </tr>
+    </thead>
+    <tbody id="myTable">
+      {% for teacher in teachers %}
+      <tr>
+        <th scope="row">{{teacher.id}}</th>
+        <td>{{teacher.name}}</td>
+        <td>{{teacher.education}}</td>
+        <td>{{teacher.area}}</td>
+        <td>
+            {% for items in teacher.competency %}
+               <div class="badge badge-pill badge-success p-2">{{items}}</div>
+            {% endfor %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  var competency = []
+  
 
 
-        function createTeacher(){
-            document.getElementById("competencyInput").value = competency
-        }
+    function createTeacher(){
+        document.getElementById("competencyInput").value = competency
+    }
 
 
 
-      $(document).ready(function () {
-        $("#myInput").on("keyup", function () {
-          var value = $(this).val().toLowerCase();
-          $("#myTable tr").filter(function () {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-          });
-        });
+  $(document).ready(function () {
+    $("#myInput").on("keyup", function () {
+      var value = $(this).val().toLowerCase();
+      $("#myTable tr").filter(function () {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
       });
+    });
+  });
 
-      document
-        .getElementById("competencyInput")
-        .addEventListener("keypress", function (event) {
-          if (event.key === "Enter") {
-            event.preventDefault();
-            addCompetency();
-          }
+  document
+    .getElementById("competencyInput")
+    .addEventListener("keypress", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        addCompetency();
+      }
+    });
+
+  function addCompetency() {
+    let inputElement = document.getElementById("competencyInput");
+    let inputValue = inputElement.value.trim();
+
+    if (inputValue !== "") {
+        competency.push(inputValue)
+        console.log(competency);
+      let newItem = document.createElement("li");
+      newItem.classList.add("competency-badge", "badge");
+      newItem.innerHTML = `${inputValue} <span class="close">&times;</span>`;
+
+      newItem
+        .querySelector(".close")
+        .addEventListener("click", function () {
+          this.parentElement.remove();
         });
 
-      function addCompetency() {
-        let inputElement = document.getElementById("competencyInput");
-        let inputValue = inputElement.value.trim();
+      document.getElementById("competencyList").appendChild(newItem);
+      inputElement.value = "";
+    }
+  }
+</script>
 
-        if (inputValue !== "") {
-            competency.push(inputValue)
-            console.log(competency);
-          let newItem = document.createElement("li");
-          newItem.classList.add("competency-badge", "badge");
-          newItem.innerHTML = `${inputValue} <span class="close">&times;</span>`;
 
-          newItem
-            .querySelector(".close")
-            .addEventListener("click", function () {
-              this.parentElement.remove();
-            });
 
-          document.getElementById("competencyList").appendChild(newItem);
-          inputElement.value = "";
-        }
-      }
-    </script>
-  </body>
-</html>
+{% endblock%}
+
+
+
+
+
