@@ -22,6 +22,9 @@
         <h5>Destinatário</h5>
         <p id="proposalRecipient"></p>
 
+        <h5>Cliente</h5>
+        <p id="proposalClient"></p>
+
         <h5>Título</h5>
         <p id="proposalTitle"></p>
 
@@ -65,6 +68,9 @@
 
         <h5>Destinatário</h5>
         <input class="form-control mb-3" type="text" id="inputproposalRecipient">
+
+        <h5>Cliente</h5>
+        <input class="form-control mb-3" type="text" id="inputproposalClient">
 
         <h5>Título</h5>
         <input class="form-control mb-3" type="text" id="inputproposalTitle">
@@ -221,9 +227,10 @@
 
 
 
-  $(document).on('click', '#viewProposalBtn', function(){
+  $(document).on('click', '#viewProposalBtn', function () {
     $('#proposalDate').text(JSON.parse(proposal).data);
     $('#proposalRecipient').text(JSON.parse(proposal).destinatario);
+    $('#proposalClient').text(JSON.parse(proposal).cliente);
     $('#proposalTitle').text(JSON.parse(proposal).titulo);
     $('#proposalObjective').text(JSON.parse(proposal).objetivo);
     $('#proposalPeriod').text(JSON.parse(proposal).periodo);
@@ -272,6 +279,7 @@
 
     $('#inputproposalDate').val(JSON.parse(proposal).data);
     $('#inputproposalRecipient').val(JSON.parse(proposal).destinatario);
+    $('#inputproposalClient').val(JSON.parse(proposal).cliente);
     $('#inputproposalTitle').val(JSON.parse(proposal).titulo);
     $('#inputproposalObjective').val(JSON.parse(proposal).objetivo);
     $('#inputproposalPeriod').val(JSON.parse(proposal).periodo);
@@ -308,6 +316,7 @@
     var updatedProposal = {
       data: $('#inputproposalDate').val(),
       destinatario: $('#inputproposalRecipient').val(),
+      cliente: $('#inputproposalClient').val(),
       titulo: $('#inputproposalTitle').val(),
       objetivo: $('#inputproposalObjective').val(),
       periodo: $('#inputproposalPeriod').val(),
@@ -368,6 +377,58 @@
 
 
 
+  function getResponse(prompt, attempts = 0) {
+    // Limite máximo de tentativas
+    const maxAttempts = 5;
+
+    $.post("{% url 'send_message' %}", {
+        'message': prompt,
+        'csrfmiddlewaretoken': '{{ csrf_token }}'
+    }, function (data) {
+        try {
+
+            proposal = data.response;
+            JSON.parse(proposal)
+            JSON.stringify(proposal)
+            var optionsHtml = `
+                <div class="container d-flex">
+                    <div class="option-card" id="viewProposalBtn">
+                        <button class="card-body btn btn-info" type="button" data-toggle="modal" data-target="#proposalModal">Visualizar proposta</button>
+                    </div>
+                    <div class="option-card" id="editProposalBtn">
+                        <button class="card-body btn btn-warning" type="button" data-toggle="modal" data-target="#editproposalModal">Editar proposta</button>
+                    </div>
+                    <div class="option-card" id="exportProposalBtn">
+                        <div class="card-body btn btn-success">Exportar Proposta</div>
+                    </div>    
+                </div>
+            `;
+            $('.chat-message.bot:last-child .message').html(optionsHtml);
+        } catch (e) {
+            console.error("Erro de parse:", e);
+            if (attempts < maxAttempts) {
+                getResponse(prompt, attempts + 1);
+            } else {
+                console.error("Número máximo de tentativas alcançado.");
+                var optionsHtml = `
+                <div class="container d-flex">
+                    <div class="option-card">
+                        <div class="card-body btn btn-info">Atualize a página e tente novamente.</div>
+                    </div>    
+                </div>
+            `;
+            $('.chat-message.bot:last-child .message').html(optionsHtml);
+                // Aqui você pode adicionar um fallback ou mostrar uma mensagem de erro ao usuário
+            }
+        }
+    });
+}
+
+
+
+
+
+
   function sendMessage() {
 
     var message = $('#message').val();
@@ -418,24 +479,9 @@
 
 
       $('#chatbox').append('<div class="chat-message bot"><div class="bot-img"></div><div class="message">Gerando Proposta...</div></div>');
-      $.post("{% url 'send_message' %}", {
-        'message': prompt,
-        'csrfmiddlewaretoken': '{{ csrf_token }}'
-      }, function (data) {
-        proposal = data.response
-        var optionsHtml = '';
 
-        optionsHtml = `
-                      <div class="container d-flex">
-                          <div class="option-card" id="viewProposalBtn"><button class="card-body btn btn-info type="button" data-toggle="modal" data-target="#proposalModal">Visualizar proposta</button></div>
-                          <div class="option-card" id="editProposalBtn"><button class="card-body btn btn-warning type="button" data-toggle="modal" data-target="#editproposalModal">Editar proposta</button></div>
-                          <div class="option-card" id="exportProposalBtn"><div class="card-body btn btn-success">Exportar Proposta</div></div>    
-                      </div>
-                    `;
 
-        $('.chat-message.bot:last-child .message').html(optionsHtml);
-
-      });
+      getResponse(prompt)
 
     }
   }

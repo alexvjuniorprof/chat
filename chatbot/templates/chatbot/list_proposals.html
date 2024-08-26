@@ -44,7 +44,7 @@
                 <td>{{ proposal.created_at|date:'d/m/Y' }}</td>
                 <td>
                     {% if proposal.completed %}
-                    <a href="#" class="generateProposal" data-id="{{ proposal.id }}" data-email="{{ proposal.email }}"
+                    <a href="#" class="generateProposa" data-id="{{ proposal.id }}" data-email="{{ proposal.email }}"
                         data-phone="{{ proposal.phone }}" data-question_1="{{ proposal.question_1 }}"
                         data-question_2="{{ proposal.question_2 }}" data-question_3="{{ proposal.question_3 }}"
                         data-question_4="{{ proposal.question_4 }}" data-question_5="{{ proposal.question_5 }}"
@@ -60,8 +60,10 @@
                         data-question_24="{{ proposal.question_24 }}"
                         data-date="{{ proposal.created_at|date:'d/m/Y' }}">
 
-                        <div class="badge badge-pill badge-success p-2">Gerar Proposta <i
-                                class="fa-solid fa-file-export"></i>
+                        <div class="badge badge-pill badge-success p-2">
+                            Atualizado
+                            <!-- <i
+                                class="fa-solid fa-file-export"></i> -->
                         </div>
                     </a>
                     {% else %}
@@ -234,38 +236,6 @@
 
 
         $(document).on('click', '.generateProposal', function () {
-
-            // var newProposal = {
-            //     "Empresa": $(this).data("question_1"),
-            //     "Ramo": $(this).data("question_2"),
-            //     "Principal negócio": $(this).data("question_3"),
-            //     "Colaboradores": $(this).data("question_4"),
-            //     "Qual a missão, visão e valores da empresa?": $(this).data("question_5"),
-            //     "Quais os diferenciais essenciais da empresa?": $(this).data("question_6"),
-            //     "Quais suas principais necessidades? Como podemos ajuda-los?": $(this).data("question_7"),
-            //     "Essas necessidades foram geradas em função de algum problema em especial? Como surgiu essa demanda?": $(this).data("question_8"),
-            //     "Além das necessidades relatadas, existe alguma outra que você gostaria de relatar?": $(this).data("question_9"),
-            //     "Qual o objetivo principal da capacitação?": $(this).data("question_10"),
-            //     "Quais os principais temas que você acredita que devem ser trabalhados nesta formação?": $(this).data("question_11"),
-            //     "Quem deverá participar da capacitação? (público-alvo) Quantas pessoas aproximadamente?": $(this).data("question_12"),
-            //     "Qual o nível médio de formação(escolaridade) do público-alvo?": $(this).data("question_13"),
-            //     "A capacitação fará parte de um programa de treinamento?": $(this).data("question_14"),
-            //     "Outras observações": $(this).data("question_15"),
-            //     "Sugestão de Título do curso": $(this).data("question_16"),
-            //     "Tipo de curso": $(this).data("question_17"),
-            //     "Eixo": $(this).data("question_18"),
-            //     "Segmento": $(this).data("question_19"),
-            //     "Carga Horária Sugerida": $(this).data("question_20"),
-            //     "Escolaridade mínima necessária": $(this).data("question_21"),
-            //     "Idade mínima necessária": $(this).data("question_22"),
-            //     "Objetivo do Curso": $(this).data("question_23"),
-            //     "Elementos": $(this).data("question_24")
-            // }
-
-
-
-
-
 
             var prompt = `
             Você é um sistema de geração de propostas corporativas. 
