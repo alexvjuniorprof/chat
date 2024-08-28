@@ -195,7 +195,7 @@
 
 <!-- Modal -->
 <div id="myModal" class="modal">
-  <div class="modal-content">
+  <div class="modal-content-help">
       <span class="close" onclick="closeModal()">&times;</span>
       <h2>Perguntas Frequentes</h2>
       <div class="faq-section">
@@ -533,6 +533,8 @@
           'message': prompt,
           'csrfmiddlewaretoken': '{{ csrf_token }}'
       }, function (data) {
+        console.log(data.response);
+        
           try {
 
               proposal = data.response;
@@ -626,7 +628,7 @@
                           "publico_alvo": "",
                           "objetivo_da_etapa": "",
                           "conteudo_programatico": [
-                          ],
+                          ]
                       },
                   ],
                   "carga_horaria_total": "",
