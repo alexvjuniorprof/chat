@@ -1,17 +1,26 @@
-{% extends 'base.html' %}
-
-
-{% block main%}
-
+{% extends 'base.html' %} {% block main%}
 
 <!-- Modal da proposta -->
-<div class="modal fade" id="proposalModal" tabindex="-1" role="dialog" aria-labelledby="proposalModalLabel"
-  aria-hidden="true">
+<div
+  class="modal fade"
+  id="proposalModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="proposalModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content p-5">
       <div class="modal-header">
-        <h5 class="modal-title" id="proposalModalLabel">Proposta de Treinamento</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="proposalModalLabel">
+          Proposta de Treinamento
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -44,450 +53,487 @@
         <p id="proposalInvestment"></p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Fechar
+        </button>
       </div>
     </div>
   </div>
 </div>
 
-
 <!-- Modal editar proposta -->
-<div class="modal fade" id="editproposalModal" tabindex="-1" role="dialog" aria-labelledby="editproposalModalLabel"
-  aria-hidden="true">
+<div
+  class="modal fade"
+  id="editproposalModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="editproposalModalLabel"
+  aria-hidden="true"
+>
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content p-5">
       <div class="modal-header">
-        <h5 class="modal-title" id="proposalModalLabel">Proposta de Treinamento</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <h5 class="modal-title" id="proposalModalLabel">
+          Proposta de Treinamento
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
         <h5>Data</h5>
-        <input class="form-control mb-3" type="text" id="inputproposalDate">
+        <input class="form-control mb-3" type="text" id="inputproposalDate" />
 
         <h5>Destinatário</h5>
-        <input class="form-control mb-3" type="text" id="inputproposalRecipient">
+        <input
+          class="form-control mb-3"
+          type="text"
+          id="inputproposalRecipient"
+        />
 
         <h5>Cliente</h5>
-        <input class="form-control mb-3" type="text" id="inputproposalClient">
+        <input class="form-control mb-3" type="text" id="inputproposalClient" />
 
         <h5>Título</h5>
-        <input class="form-control mb-3" type="text" id="inputproposalTitle">
+        <input class="form-control mb-3" type="text" id="inputproposalTitle" />
 
         <h5>Objetivo</h5>
-        <input class="form-control mb-3" type="text" id="inputproposalObjective">
+        <input
+          class="form-control mb-3"
+          type="text"
+          id="inputproposalObjective"
+        />
 
         <h5>Período de Realização</h5>
-        <input class="form-control mb-3" type="text" id="inputproposalPeriod">
+        <input class="form-control mb-3" type="text" id="inputproposalPeriod" />
 
         <h5>Detalhamento da Proposta</h5>
         <div id="inputproposalDetails"></div>
 
         <h5>Carga Horária Total</h5>
-        <input class="form-control mb-3" type="text" id="inputproposalTotalHours">
+        <input
+          class="form-control mb-3"
+          type="text"
+          id="inputproposalTotalHours"
+        />
 
         <h5>Valor do Investimento</h5>
-        <input class="form-control mb-3" type="text" id="inputproposalInvestment">
+        <input
+          class="form-control mb-3"
+          type="text"
+          id="inputproposalInvestment"
+        />
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-        <button type="button" id="saveProposal" class="btn btn-success" data-dismiss="modal">Salvar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
+          Fechar
+        </button>
+        <button
+          type="button"
+          id="saveProposal"
+          class="btn btn-success"
+          data-dismiss="modal"
+        >
+          Salvar
+        </button>
       </div>
     </div>
   </div>
 </div>
 
-
-
-
-
-
-
-<div class="main-container">
-  <div class="aside-options">
-    <form action="">
-      <input class="form-control my-3" id="myInput" type="text" placeholder="Buscar Proposta" />
-    </form>
-    <h5>Últimas conversas</h5>
-    <div class="card">
-      <p>Título da proposta</p>
+<div class="container">
+  <div class="chat-box" id="chatbox">
+    <div class="chat-message bot">
+      <div class="bot-img"></div>
+      <div class="message d-inline">
+        <h3>Bem-vindo à GeInA, sua assistente de propostas corporativas!</h3>
+        <p>
+          Estou aqui para ajudar no processo de criação da sua proposta
+          corporativa. Antes de começarmos, preciso de algumas informações
+          importantes. Podemos iniciar?
+        </p>
+        <button class="btn btn-primary" id="start">Iniciar Proposta</button>
+      </div>
     </div>
   </div>
+  <div class="input-group my-2 p-2">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Digite sua mensagem"
+      id="message"
+      disabled
+    />
 
-  <div class="chat-container">
-    <div class="chat-box" id="chatbox">
-      <div class="chat-message bot">
-        <div class="bot-img"></div>
-        <div class="message d-inline">
-          <b>Bem-vindo à GeInA, sua assistente de propostas corporativas!</b>
-          <p>
-            Olá! Estou aqui para ajudar no processo de criação da sua
-            proposta corporativa. Antes de começarmos, preciso de algumas
-            informações importantes. Podemos iniciar?
-          </p>
-          <button class="btn btn-primary" id="start">Iniciar</button>
-        </div>
-      </div>
-    </div>
-    <div class="input-group my-2 p-2">
-      <input type="text" class="form-control" placeholder="Digite sua mensagem" id="message" disabled />
-
-      <div class="input-group-append">
-        <button class="btn btn-primary" type="button" id="send" disabled>
-          Enviar
-        </button>
-      </div>
+    <div class="input-group-append">
+      <button class="btn btn-primary" type="button" id="send" disabled>
+        Enviar
+      </button>
     </div>
   </div>
 </div>
 
 <script>
 
-  var proposal;
-  var response = [];
-  var inputproposalDetails = document.getElementById('inputproposalDetails');
-  $(document).ready(function () {
-    var currentQuestion = 0;
-    var questions = [
-      {% for question in array_questions %}
-                "{{ question }}",
-    {% endfor %}
-        ];
+    var proposal;
+    var response = [];
+    var inputproposalDetails = document.getElementById('inputproposalDetails');
+    $(document).ready(function () {
+      var currentQuestion = 0;
+      var questions = [
+        {% for question in array_questions %}
+                  "{{ question }}",
+      {% endfor %}
+          ];
 
-  function askQuestion() {
-    $('#options').remove();
-    if (currentQuestion < questions.length) {
-      $('#chatbox').append(`
-                    <div class="chat-message bot">
-                        <div class="bot-img"></div>
-                        <div class="message">
-                            ${questions[currentQuestion]}
-                            <div id="options" class="options"></div>
-                        </div>
-                    </div>
-                `);
+    function askQuestion() {
+      $('#options').remove();
+      if (currentQuestion < questions.length) {
+        $('#chatbox').append(`
+                      <div class="chat-message bot">
+                          <div class="bot-img"></div>
+                          <div class="message">
+                              ${questions[currentQuestion]}
+                              <div id="options" class="options"></div>
+                          </div>
+                      </div>
+                  `);
 
-      if (currentQuestion === 2 || currentQuestion === 3) {
-        $('#message').prop('disabled', true);
-        $('#send').prop('disabled', true);
-        createOptions();
-      } else {
-        $('#message').prop('disabled', false);
-        $('#send').prop('disabled', false);
+        if (currentQuestion === 2 || currentQuestion === 3) {
+          $('#message').prop('disabled', true);
+          $('#send').prop('disabled', true);
+          createOptions();
+        } else {
+          $('#message').prop('disabled', false);
+          $('#send').prop('disabled', false);
+          $('#options').empty();
+        }
+        var chatBox = document.getElementById('chatbox');
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    }
+
+    function createOptions() {
+      var options = [];
+      if (currentQuestion === 2) {
+        options = ["Público", "Privado"];
+      } else if (currentQuestion === 3) {
+        options = ["Ação extensiva", "Curso", "Consultoria"];
+      }
+      var optionsHtml = '';
+      options.forEach(function (option) {
+        optionsHtml += `<div class="option-card"><div class="card-body">${option}</div></div>`;
+      });
+      $('#options').html(optionsHtml);
+
+      $('.option-card').click(function () {
+        var selectedOption = $(this).text();
+        $('#chatbox').append('<div class="chat-message user"><div class="message">' + selectedOption + '</div></div>');
+        response.push(selectedOption);
         $('#options').empty();
-      }
-      var chatBox = document.getElementById('chatbox');
-      chatBox.scrollTop = chatBox.scrollHeight;
+        currentQuestion++;
+        askQuestion();
+      });
     }
-  }
 
-  function createOptions() {
-    var options = [];
-    if (currentQuestion === 2) {
-      options = ["Público", "Privado"];
-    } else if (currentQuestion === 3) {
-      options = ["Ação extensiva", "Curso", "Consultoria"];
-    }
-    var optionsHtml = '';
-    options.forEach(function (option) {
-      optionsHtml += `<div class="option-card"><div class="card-body">${option}</div></div>`;
-    });
-    $('#options').html(optionsHtml);
-
-    $('.option-card').click(function () {
-      var selectedOption = $(this).text();
-      $('#chatbox').append('<div class="chat-message user"><div class="message">' + selectedOption + '</div></div>');
-      response.push(selectedOption);
-      $('#options').empty();
-      currentQuestion++;
+    $('#start').click(function () {
+      $('#message').prop('disabled', false);
+      $('#send').prop('disabled', false);
+      $(this).hide();
       askQuestion();
     });
-  }
 
-  $('#start').click(function () {
-    $('#message').prop('disabled', false);
-    $('#send').prop('disabled', false);
-    $(this).hide();
-    askQuestion();
-  });
-
-  $('#send').click(function () {
-    sendMessage();
-  });
-
-  $('#message').keypress(function (event) {
-    if (event.which == 13) {
+    $('#send').click(function () {
       sendMessage();
-      event.preventDefault();
-    }
-  });
-
-
-
-
-
-  $(document).on('click', '#viewProposalBtn', function () {
-    $('#proposalDate').text(JSON.parse(proposal).data);
-    $('#proposalRecipient').text(JSON.parse(proposal).destinatario);
-    $('#proposalClient').text(JSON.parse(proposal).cliente);
-    $('#proposalTitle').text(JSON.parse(proposal).titulo);
-    $('#proposalObjective').text(JSON.parse(proposal).objetivo);
-    $('#proposalPeriod').text(JSON.parse(proposal).periodo);
-
-    var proposalDetailsHtml = `
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Título da Etapa</th>
-                        <th>Carga Horária</th>
-                        <th>Público Alvo</th>
-                        <th>Objetivo da Etapa</th>
-                        <th>Conteúdo Programático</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-    JSON.parse(proposal).detalhamento_proposta.forEach(function (etapa) {
-      proposalDetailsHtml += `
-                <tr>
-                    <td>${etapa.titulo_etapa}</td>
-                    <td>${etapa.carga_horaria_necessaria}</td>
-                    <td>${etapa.publico_alvo}</td>
-                    <td>${etapa.objetivo_da_etapa}</td>
-                    <td>
-                            ${etapa.conteudo_programatico.map(conteudo => `<li>${conteudo}</li>`).join('')}
-                    </td>
-                </tr>
-            `;
     });
 
-    proposalDetailsHtml += `
-          </tbody>
-      </table>
-  `;
-
-    $('#proposalDetails').html(proposalDetailsHtml);
-
-    $('#proposalTotalHours').text(JSON.parse(proposal).carga_horaria_total);
-    $('#proposalInvestment').text(JSON.parse(proposal).valor_investimento);
-  })
-
-  $(document).on('click', '#editProposalBtn', function () {
-
-
-    $('#inputproposalDate').val(JSON.parse(proposal).data);
-    $('#inputproposalRecipient').val(JSON.parse(proposal).destinatario);
-    $('#inputproposalClient').val(JSON.parse(proposal).cliente);
-    $('#inputproposalTitle').val(JSON.parse(proposal).titulo);
-    $('#inputproposalObjective').val(JSON.parse(proposal).objetivo);
-    $('#inputproposalPeriod').val(JSON.parse(proposal).periodo);
-    $('#inputproposalTotalHours').val(JSON.parse(proposal).carga_horaria_total);
-    $('#inputproposalInvestment').val(JSON.parse(proposal).valor_investimento);
-
-    JSON.parse(proposal).detalhamento_proposta.forEach((item, index) => {
-
-
-      inputproposalDetails.innerHTML += `
-          <hr>
-          <h6>${index + 1}.Título da etapa</h5>
-          <input class="form-control mb-3" value="${item.titulo_etapa}" type="text" id="inputTitle_${index}">
-          <h6>${index + 1}.Carga Horária</h5>
-          <input class="form-control mb-3" value="${item.carga_horaria_necessaria}" type="text" id="inputHours_${index}">
-          <h6>${index + 1}.Público Alvo</h5>
-          <input class="form-control mb-3" value="${item.publico_alvo}" type="text" id="inputAudience_${index}">
-          <h6>${index + 1}.Objetivo da Etapa</h5>
-          <textarea class="form-control mb-3" rows="5" type="text" id="inputObjective_${index}">${item.objetivo_da_etapa}</textarea>
-          <h6>${index + 1}.Conteúdo Programático</h5>
-          ${item.conteudo_programatico.map((conteudo, index) => `<input class="form-control mb-3" value="${conteudo}" type="text" id="inputcontent_${index}">`).join('')}
- 
-          `
-
-    });
-
-
-  });
-
-
-
-  $(document).on('click', '#saveProposal', function () {
-
-    var updatedProposal = {
-      data: $('#inputproposalDate').val(),
-      destinatario: $('#inputproposalRecipient').val(),
-      cliente: $('#inputproposalClient').val(),
-      titulo: $('#inputproposalTitle').val(),
-      objetivo: $('#inputproposalObjective').val(),
-      periodo: $('#inputproposalPeriod').val(),
-      carga_horaria_total: $('#inputproposalTotalHours').val(),
-      valor_investimento: $('#inputproposalInvestment').val(),
-      detalhamento_proposta: JSON.parse(proposal).detalhamento_proposta.map((item, index) => {
-        return {
-          titulo_etapa: $(`#inputTitle_${index}`).val(),
-          carga_horaria_necessaria: $(`#inputHours_${index}`).val(),
-          publico_alvo: $(`#inputAudience_${index}`).val(),
-          objetivo_da_etapa: $(`#inputObjective_${index}`).val(),
-          conteudo_programatico: [
-            item.conteudo_programatico.map((el, num) => $(`#inputcontent_${num}`).val())
-          ]
-        }
-      })
-
-    };
-
-
-    proposal = JSON.stringify(updatedProposal)
-  })
-
-
-
-
-
-  $(document).on('click', '#exportProposalBtn', function () {
-
-    $.ajax({
-      url: "{% url 'download_doc' %}",
-      type: "POST",
-      data: {
-        'proposal': proposal,
-        'csrfmiddlewaretoken': '{{ csrf_token }}'
-      },
-      xhrFields: {
-        responseType: 'blob'
-      },
-      success: function (blob) {
-        var url = window.URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = 'proposta.doc';
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        console.log('Download gerado com sucesso.');
-      },
-      error: function (xhr, status, error) {
-        console.log(`Erro: ${error}`);
+    $('#message').keypress(function (event) {
+      if (event.which == 13) {
+        sendMessage();
+        event.preventDefault();
+        var chatBox = document.getElementById('chatbox');
+      chatBox.scrollTop = chatBox.scrollHeight;
       }
     });
-  });
 
 
 
 
 
-  function getResponse(prompt, attempts = 0) {
-    // Limite máximo de tentativas
-    const maxAttempts = 5;
+    $(document).on('click', '#viewProposalBtn', function () {
+      $('#proposalDate').text(JSON.parse(proposal).data);
+      $('#proposalRecipient').text(JSON.parse(proposal).destinatario);
+      $('#proposalClient').text(JSON.parse(proposal).cliente);
+      $('#proposalTitle').text(JSON.parse(proposal).titulo);
+      $('#proposalObjective').text(JSON.parse(proposal).objetivo);
+      $('#proposalPeriod').text(JSON.parse(proposal).periodo);
 
-    $.post("{% url 'send_message' %}", {
-        'message': prompt,
-        'csrfmiddlewaretoken': '{{ csrf_token }}'
-    }, function (data) {
-        try {
+      var proposalDetailsHtml = `
+              <table class="table table-bordered">
+                  <thead>
+                      <tr>
+                          <th>Título da Etapa</th>
+                          <th>Carga Horária</th>
+                          <th>Público Alvo</th>
+                          <th>Objetivo da Etapa</th>
+                          <th>Conteúdo Programático</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+          `;
 
-            proposal = data.response;
-            JSON.parse(proposal)
-            JSON.stringify(proposal)
-            var optionsHtml = `
-                <div class="container d-flex">
-                    <div class="option-card" id="viewProposalBtn">
-                        <button class="card-body btn btn-info" type="button" data-toggle="modal" data-target="#proposalModal">Visualizar proposta</button>
-                    </div>
-                    <div class="option-card" id="editProposalBtn">
-                        <button class="card-body btn btn-warning" type="button" data-toggle="modal" data-target="#editproposalModal">Editar proposta</button>
-                    </div>
-                    <div class="option-card" id="exportProposalBtn">
-                        <div class="card-body btn btn-success">Exportar Proposta</div>
-                    </div>    
-                </div>
-            `;
-            $('.chat-message.bot:last-child .message').html(optionsHtml);
-        } catch (e) {
-            console.error("Erro de parse:", e);
-            if (attempts < maxAttempts) {
-                getResponse(prompt, attempts + 1);
-            } else {
-                console.error("Número máximo de tentativas alcançado.");
-                var optionsHtml = `
-                <div class="container d-flex">
-                    <div class="option-card">
-                        <div class="card-body btn btn-info">Atualize a página e tente novamente.</div>
-                    </div>    
-                </div>
-            `;
-            $('.chat-message.bot:last-child .message').html(optionsHtml);
-                // Aqui você pode adicionar um fallback ou mostrar uma mensagem de erro ao usuário
-            }
-        }
+      JSON.parse(proposal).detalhamento_proposta.forEach(function (etapa) {
+        proposalDetailsHtml += `
+                  <tr>
+                      <td>${etapa.titulo_etapa}</td>
+                      <td>${etapa.carga_horaria_necessaria}</td>
+                      <td>${etapa.publico_alvo}</td>
+                      <td>${etapa.objetivo_da_etapa}</td>
+                      <td>
+                              ${etapa.conteudo_programatico.map(conteudo => `<li>${conteudo}</li>`).join('')}
+                      </td>
+                  </tr>
+              `;
+      });
+
+      proposalDetailsHtml += `
+            </tbody>
+        </table>
+    `;
+
+      $('#proposalDetails').html(proposalDetailsHtml);
+
+      $('#proposalTotalHours').text(JSON.parse(proposal).carga_horaria_total);
+      $('#proposalInvestment').text(JSON.parse(proposal).valor_investimento);
+    })
+
+    $(document).on('click', '#editProposalBtn', function () {
+
+
+      $('#inputproposalDate').val(JSON.parse(proposal).data);
+      $('#inputproposalRecipient').val(JSON.parse(proposal).destinatario);
+      $('#inputproposalClient').val(JSON.parse(proposal).cliente);
+      $('#inputproposalTitle').val(JSON.parse(proposal).titulo);
+      $('#inputproposalObjective').val(JSON.parse(proposal).objetivo);
+      $('#inputproposalPeriod').val(JSON.parse(proposal).periodo);
+      $('#inputproposalTotalHours').val(JSON.parse(proposal).carga_horaria_total);
+      $('#inputproposalInvestment').val(JSON.parse(proposal).valor_investimento);
+
+      JSON.parse(proposal).detalhamento_proposta.forEach((item, index) => {
+
+
+        inputproposalDetails.innerHTML += `
+            <hr>
+            <h6>${index + 1}.Título da etapa</h5>
+            <input class="form-control mb-3" value="${item.titulo_etapa}" type="text" id="inputTitle_${index}">
+            <h6>${index + 1}.Carga Horária</h5>
+            <input class="form-control mb-3" value="${item.carga_horaria_necessaria}" type="text" id="inputHours_${index}">
+            <h6>${index + 1}.Público Alvo</h5>
+            <input class="form-control mb-3" value="${item.publico_alvo}" type="text" id="inputAudience_${index}">
+            <h6>${index + 1}.Objetivo da Etapa</h5>
+            <textarea class="form-control mb-3" rows="5" type="text" id="inputObjective_${index}">${item.objetivo_da_etapa}</textarea>
+            <h6>${index + 1}.Conteúdo Programático</h5>
+            ${item.conteudo_programatico.map((conteudo, index) => `<input class="form-control mb-3" value="${conteudo}" type="text" id="inputcontent_${index}">`).join('')}
+
+            `
+
+      });
+
+
     });
-}
+
+
+
+    $(document).on('click', '#saveProposal', function () {
+
+      var updatedProposal = {
+        data: $('#inputproposalDate').val(),
+        destinatario: $('#inputproposalRecipient').val(),
+        cliente: $('#inputproposalClient').val(),
+        titulo: $('#inputproposalTitle').val(),
+        objetivo: $('#inputproposalObjective').val(),
+        periodo: $('#inputproposalPeriod').val(),
+        carga_horaria_total: $('#inputproposalTotalHours').val(),
+        valor_investimento: $('#inputproposalInvestment').val(),
+        detalhamento_proposta: JSON.parse(proposal).detalhamento_proposta.map((item, index) => {
+          return {
+            titulo_etapa: $(`#inputTitle_${index}`).val(),
+            carga_horaria_necessaria: $(`#inputHours_${index}`).val(),
+            publico_alvo: $(`#inputAudience_${index}`).val(),
+            objetivo_da_etapa: $(`#inputObjective_${index}`).val(),
+            conteudo_programatico: [
+              item.conteudo_programatico.map((el, num) => $(`#inputcontent_${num}`).val())
+            ]
+          }
+        })
+
+      };
+
+
+      proposal = JSON.stringify(updatedProposal)
+    })
 
 
 
 
 
+    $(document).on('click', '#exportProposalBtn', function () {
 
-  function sendMessage() {
-
-    var message = $('#message').val();
-    if (message.trim() === '') return;
-
-    $('#chatbox').append('<div class="chat-message user"><div class="message">' + message + '</div></div>');
-    response.push(message);
-    $('#message').val('');
-
-    if (currentQuestion < questions.length - 1) {
-      currentQuestion++;
-      askQuestion();
-    } else {
-      var prompt = `
-                Crie uma proposta de treinamento profissional e abrangente para a prestação de serviços ou produtos a um cliente com o nome ${response[1]}.
-                A proposta deve se basear nos seguintes parametros (IMPORTANTE: Nenhum parametro pode ser retornado vazio):
-                data:{}
-                destinatário:${response[0]}
-                titulo: ${response[5]}(Não utilizar os termos a seguir no titulo "Qualificação Profissional, Técnico, Graduação ou Pós-Graduação")
-                Objetivo:${response[6]}(essa etapa precisa ser detalhada em um parágrafo, utilizando o resumo informado. Importante utilizar um ou mais verbos a seguir para dar enfase no objetivo: difundir, divulgar, propagar, repassar, orientar, apresentar,aprimorar, melhorar, otimizar, complementar,
-                ampliar, potencializar, acrescentar, amplificar, aumentar, incrementar, práticar ,levantar, mapear, atuar, realizar)
-                Periodo de realização:{}(gerar com base na proposta)
-                Detalhamento da proposta: Essa etapa precisa ser detalhada levando em consideração o titulo e objetivo.
-                Importante!!! - O detalhamento da proposta deve ser dividido em etapas de dependendo da carga horaria e também utilizar a seguinte estrura: Titulo da etapa, carga horaria necessária, público alvo, objetivo da etapa, conteudo programatico(em lista)
-                Carga horária total: {}
-                Valor do investimento: {}
-                Importante que a resposta seja um objeto json sem as ""json"". O json deve sempre conter as seguinte estrurtura de  chaves: 
-                "data": "",
-                "cliente": "",
-                "destinatario": "",
-                "titulo": "",
-                "objetivo": "",
-                "periodo": "",
-                "detalhamento_proposta": [
-                    {
-                        "titulo_etapa": "",
-                        "carga_horaria_necessaria": "",
-                        "publico_alvo": "",
-                        "objetivo_da_etapa": "",
-                        "conteudo_programatico": [
-                        ],
-                    },
-                ],
-                "carga_horaria_total": "",
-                "valor_investimento": "",
-}
-                `;
+      $.ajax({
+        url: "{% url 'download_doc' %}",
+        type: "POST",
+        data: {
+          'proposal': proposal,
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        xhrFields: {
+          responseType: 'blob'
+        },
+        success: function (blob) {
+          var url = window.URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = 'proposta.doc';
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+          console.log('Download gerado com sucesso.');
+        },
+        error: function (xhr, status, error) {
+          console.log(`Erro: ${error}`);
+        }
+      });
+    });
 
 
-      $('#chatbox').append('<div class="chat-message bot"><div class="bot-img"></div><div class="message">Gerando Proposta...</div></div>');
 
 
-      getResponse(prompt)
 
-    }
+    function getResponse(prompt, attempts = 0) {
+      // Limite máximo de tentativas
+      const maxAttempts = 5;
+
+      $.post("{% url 'send_message' %}", {
+          'message': prompt,
+          'csrfmiddlewaretoken': '{{ csrf_token }}'
+      }, function (data) {
+          try {
+
+              proposal = data.response;
+              JSON.parse(proposal)
+              JSON.stringify(proposal)
+              var optionsHtml = `
+                  <div class="container d-flex">
+                      <div id="viewProposalBtn">
+                          <button class="card-body btn-options" type="button" data-toggle="modal" data-target="#proposalModal">Visualizar proposta</button>
+                      </div>
+                      <div id="editProposalBtn">
+                          <button class="card-body btn-options" type="button" data-toggle="modal" data-target="#editproposalModal">Editar proposta</button>
+                      </div>
+                      <div id="exportProposalBtn">
+                          <button class="card-body btn-options">Exportar Proposta</button>
+                      </div>
+                  </div>
+              `;
+              $('.chat-message.bot:last-child .message').html(optionsHtml);
+              var chatBox = document.getElementById('chatbox');
+      chatBox.scrollTop = chatBox.scrollHeight;
+          } catch (e) {
+              console.error("Erro de parse:", e);
+              if (attempts < maxAttempts) {
+                  getResponse(prompt, attempts + 1);
+              } else {
+                  console.error("Número máximo de tentativas alcançado.");
+                  var optionsHtml = `
+                  <div class="container d-flex">
+                      <div class="option-card">
+                          <div class="card-body btn btn-info">Atualize a página e tente novamente.</div>
+                      </div>
+                  </div>
+              `;
+              $('.chat-message.bot:last-child .message').html(optionsHtml);
+
+              var chatBox = document.getElementById('chatbox');
+      chatBox.scrollTop = chatBox.scrollHeight;
+                  // Aqui você pode adicionar um fallback ou mostrar uma mensagem de erro ao usuário
+              }
+          }
+      });
   }
 
-    });
-</script>
 
+
+
+
+
+    function sendMessage() {
+
+
+
+      var message = $('#message').val();
+      if (message.trim() === '') return;
+
+      $('#chatbox').append('<div class="chat-message user"><div class="message">' + message + '</div></div>');
+      response.push(message);
+      $('#message').val('');
+
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        askQuestion();
+      } else {
+        $('#message').prop('disabled', true);
+          $('#send').prop('disabled', true);
+        var prompt = `
+                  Crie uma proposta de treinamento profissional e abrangente para a prestação de serviços ou produtos a um cliente com o nome ${response[1]}.
+                  A proposta deve se basear nos seguintes parametros (IMPORTANTE: Nenhum parametro pode ser retornado vazio):
+                  data:{}
+                  destinatário:${response[0]}
+                  titulo: ${response[5]}(Não utilizar os termos a seguir no titulo "Qualificação Profissional, Técnico, Graduação ou Pós-Graduação")
+                  Objetivo:${response[6]}(essa etapa precisa ser detalhada em um parágrafo, utilizando o resumo informado. Importante utilizar um ou mais verbos a seguir para dar enfase no objetivo: difundir, divulgar, propagar, repassar, orientar, apresentar,aprimorar, melhorar, otimizar, complementar,
+                  ampliar, potencializar, acrescentar, amplificar, aumentar, incrementar, práticar ,levantar, mapear, atuar, realizar)
+                  Periodo de realização:{}(gerar com base na proposta)
+                  Detalhamento da proposta: Essa etapa precisa ser detalhada levando em consideração o titulo e objetivo.
+                  Importante!!! - O detalhamento da proposta deve ser dividido em etapas de dependendo da carga horaria e também utilizar a seguinte estrura: Titulo da etapa, carga horaria necessária, público alvo, objetivo da etapa, conteudo programatico(em lista)
+                  Carga horária total: {}
+                  Valor do investimento: {}
+                  Importante que a resposta seja um objeto json sem as ""json"". O json deve sempre conter as seguinte estrurtura de  chaves:
+                  "data": "",
+                  "cliente": "",
+                  "destinatario": "",
+                  "titulo": "",
+                  "objetivo": "",
+                  "periodo": "",
+                  "detalhamento_proposta": [
+                      {
+                          "titulo_etapa": "",
+                          "carga_horaria_necessaria": "",
+                          "publico_alvo": "",
+                          "objetivo_da_etapa": "",
+                          "conteudo_programatico": [
+                          ],
+                      },
+                  ],
+                  "carga_horaria_total": "",
+                  "valor_investimento": "",
+  }
+                  `;
+
+
+        $('#chatbox').append('<div class="chat-message bot"><div class="bot-img"></div><div class="message">Gerando Proposta...</div></div>');
+
+
+        getResponse(prompt)
+
+      }
+    }
+
+      });
+</script>
 
 {% endblock %}
