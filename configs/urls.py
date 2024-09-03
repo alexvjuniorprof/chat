@@ -8,6 +8,8 @@ urlpatterns = [
     path('send_message/', views.send_message, name='send_message'),
     path('accounts/', include('accounts.urls')),
     
+    path('edit-user/', views.edit_user, name='edit-user'),
+    path('delete-user/<int:id>/', views.delete_user, name='delete-user'),
     
     path('list-users/', views.list_users, name='list-users'),
     path('list-teachers/', views.list_teachers, name='list-teachers'),

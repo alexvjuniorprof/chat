@@ -152,11 +152,11 @@
     <div class="chat-message bot">
       <div class="bot-img"></div>
       <div class="message d-inline">
-        <h3>Bem-vindo à GeInA, sua assistente de propostas corporativas!</h3>
+        <h3>Bem-vindo à GenIA, sua assistente de propostas corporativas!</h3>
         <p>
           Estou aqui para ajudar no processo de criação da sua proposta
           corporativa. Antes de começarmos, preciso de algumas informações
-          importantes. Podemos iniciar?
+          importantes. Podemos começar?
         </p>
         <button class="btn btn-primary" id="start">Iniciar Proposta</button>
       </div>
@@ -247,6 +247,7 @@
   </div>
 </div>
 
+
 <script>
 
   // AJUDA
@@ -297,7 +298,7 @@
       var currentQuestion = 0;
       var questions = [
         {% for question in array_questions %}
-                  "{{ question }}",
+                  "{{ question.question }}",
       {% endfor %}
           ];
 
