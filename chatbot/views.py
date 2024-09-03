@@ -119,14 +119,6 @@ def delete_user(request, id):
     return redirect('list-users')
 
 
-
-
-
-
-
-
-
-
 def create_teacher(request):
     name = request.POST['name']
     education = request.POST['education']
