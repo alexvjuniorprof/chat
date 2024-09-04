@@ -294,8 +294,8 @@
     var proposal;
     var response = [];
     var inputproposalDetails = document.getElementById('inputproposalDetails');
+    var currentQuestion = 0;
     $(document).ready(function () {
-      var currentQuestion = 0;
       var questions = [
         {% for question in array_questions %}
                   "{{ question.question }}",
@@ -319,7 +319,12 @@
           $('#message').prop('disabled', true);
           $('#send').prop('disabled', true);
           createOptions();
-        } else {
+        }else if(currentQuestion === 4){
+          $('#message').prop('disabled', false);
+          $('#send').prop('disabled', false);
+          createOptions();
+        } 
+        else {
           $('#message').prop('disabled', false);
           $('#send').prop('disabled', false);
           $('#options').empty();
@@ -335,6 +340,8 @@
         options = ["Público", "Privado"];
       } else if (currentQuestion === 3) {
         options = ["Ação extensiva", "Curso", "Consultoria"];
+      } else if (currentQuestion === 4) {
+        options = ["Gerar Automaticamente"];
       }
       var optionsHtml = '';
       options.forEach(function (option) {
@@ -616,7 +623,7 @@
                   Carga horária total: {}
                   Valor do investimento: {}
                   Importante que a resposta seja um objeto json sem as ""json"". O json deve sempre conter as seguinte estrurtura de  chaves:
-                  "data": "",
+                  "data": "${new Date().toLocaleDateString()}",
                   "cliente": "",
                   "destinatario": "",
                   "titulo": "",
