@@ -127,6 +127,10 @@ def create_teacher(request):
     Teacher.objects.create(name=name, education=education, area=area, competency=competency)
     return redirect('list-teachers')
     
+
+def delete_teacher(request, id):
+    Teacher.objects.get(id=id).delete()
+    return redirect('list-teachers')   
     
     
 @csrf_exempt
