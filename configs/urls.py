@@ -13,6 +13,7 @@ urlpatterns = [
     path('delete-user/<int:id>/', views.delete_user, name='delete-user'),
     
     path('list-teachers/', views.list_teachers, name='list-teachers'),
+    path('edit-teacher/', views.edit_teacher, name='edit-teacher'),
     path('delete-teacher/<int:id>/', views.delete_teacher, name='delete-teacher'),
 
 
@@ -29,5 +30,11 @@ urlpatterns = [
     path('create-user/', views.create_user, name='create-user'),
     path('create-teacher/', views.create_teacher, name='create-teacher'),
     path('change-password/', views.update_password, name='change_password'),
+
+
+
+
+    path('testchat/', views.testchat, name='testchat'),
+    
 
 ]

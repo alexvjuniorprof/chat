@@ -128,6 +128,24 @@ def create_teacher(request):
     return redirect('list-teachers')
     
 
+def edit_teacher(request):
+    id = request.POST['teacher-id']
+    name = request.POST['name']
+    education = request.POST['education']
+    area = request.POST['area']
+    competency = request.POST['competency']
+    print(competency)
+    teacher = Teacher.objects.get(id=id)
+
+    teacher.name = name
+    teacher.education = education
+    teacher.area = area
+    teacher.competency = competency
+    teacher.save()
+
+    return redirect('list-teachers')   
+
+
 def delete_teacher(request, id):
     Teacher.objects.get(id=id).delete()
     return redirect('list-teachers')   
@@ -236,3 +254,14 @@ def form_briefing(request):
 
     else:
         return render(request, 'chatbot/briefing.html')    
+
+
+
+
+
+
+
+
+
+def testchat(request):
+    return render(request, 'chatbot/testchat.html')

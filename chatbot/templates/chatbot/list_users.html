@@ -179,12 +179,8 @@
           {% if user.is_active %}
           <div class="badge badge-pill badge-success p-2">Habilitado</div>
           {% else %}
-          <div class="badge badge-pill badge-danger p-2">Desabilitado</div>
+          <div class="badge badge-pill badge-danger bg-secondary p-2">Desabilitado</div>
           {% endif %}
-        </td>
-        <td>
-          <i data-id="{{user.id}}" title="Deletar Usuário" class="fa-solid fa-trash-can text-danger deleteUser"
-            style="cursor: pointer;"></i>
         </td>
         <td>
           <i type="button" style="height: 40px" data-bs-toggle="modal" data-bs-target="#editModal" data-id="{{user.id}}"
@@ -192,6 +188,10 @@
             data-is-superuser="{% if user.is_superuser %}Sim{% else %}Não{% endif %}"
             data-is-active="{% if user.is_active %}Habilitado{% else %}Desabilitado{% endif %}" title="Editar Usuário"
             class="fa-regular fa-pen-to-square text-success edit-user-btn" style="cursor: pointer;"></i>
+        </td>
+        <td>
+          <i data-id="{{user.id}}" title="Deletar Usuário" class="fa-solid fa-trash-can text-danger deleteUser"
+            style="cursor: pointer;"></i>
         </td>
       </tr>
       {% endfor %}

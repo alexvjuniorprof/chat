@@ -56,7 +56,7 @@
         <h1 class="modal-title fs-5" id="exampleModalLabel">Editar Professor</h1>
       </div>
       <div class="modal-body">
-        <form method="POST" action="">
+        <form id="editTeacherForm" method="POST" action="{% url 'edit-teacher' %}">
           {% csrf_token %}
           <input type="hidden" name="teacher-id" id="edit-teacher-id" />
           <div class="form-group">
@@ -122,8 +122,8 @@
           <div class="form-group">
             <label>Competências</label>
             <div class="competency-input-container">
-              <ul id="competencyList" class="d-flex flex-wrap mb-0 p-0"></ul>
-              <input type="text" id="competencyInput" class="competency-input" name="competency"
+              <ul id="addcompetencyList" class="d-flex flex-wrap mb-0 p-0"></ul>
+              <input type="text" id="addcompetencyInput" class="competency-input" name="competency"
                 placeholder="Digite uma competência e pressione Enter" required />
             </div>
           </div>
@@ -175,12 +175,8 @@
         <td>{{teacher.education}}</td>
         <td>
           {% for items in teacher.competency %}
-          <div class="badge">{{items}}</div>
+          <div class="badge mb-2 p-2">{{items}}</div>
           {% endfor %}
-        </td>
-        <td>
-          <i data-id="{{teacher.id}}" title="Deletar Usuário" class="fa-solid fa-trash-can text-danger deleteTeacher"
-            style="cursor: pointer;"></i>
         </td>
         <td>
           <i type="button" style="height: 40px" data-bs-toggle="modal" data-bs-target="#editModal"
@@ -188,6 +184,10 @@
             data-edit-education="{{ teacher.education }}" data-edit-area="{{teacher.area}}"
             data-edit-competency="{{teacher.competency}}" title="Editar Usuário"
             class="fa-regular fa-pen-to-square text-success edit-user-btn" style="cursor: pointer;"></i>
+        </td>
+        <td>
+          <i data-id="{{teacher.id}}" title="Deletar Usuário" class="fa-solid fa-trash-can text-danger deleteTeacher"
+            style="cursor: pointer;"></i>
         </td>
       </tr>
       {% endfor %}
@@ -202,28 +202,23 @@
   var competency = [];
 
   function createTeacher() {
-    document.getElementById("competencyInput").value = competency;
+    document.getElementById("addcompetencyInput").value = competency;
   }
 
 
-  document
-    .getElementById("competencyInput")
-    .addEventListener("keypress", function (event) {
-      console.log('oi');
-
-      if (event.key === "Enter") {
-        event.preventDefault();
-        addCompetency();
-      }
-    });
+  document.getElementById("addcompetencyInput").addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      addCompetency();
+    }
+  });
 
   function addCompetency() {
-    let inputElement = document.getElementById("competencyInput");
+    let inputElement = document.getElementById("addcompetencyInput");
     let inputValue = inputElement.value.trim();
 
     if (inputValue !== "") {
       competency.push(inputValue);
-      console.log(competency);
       let newItem = document.createElement("li");
       newItem.classList.add("competency-badge", "badge");
       newItem.innerHTML = `${inputValue} <span class="close">&times;</span>`;
@@ -232,10 +227,46 @@
         this.parentElement.remove();
       });
 
-      document.getElementById("competencyList").appendChild(newItem);
+      document.getElementById("addcompetencyList").appendChild(newItem);
       inputElement.value = "";
     }
   }
+
+  function editTeacher() {
+    document.getElementById("editcompetencyInput").value = competency;
+  }
+
+
+  document.getElementById("edit-competencyInput").addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      editCompetency();
+    }
+  });
+
+  function editCompetency() {
+    let inputElement = document.getElementById("edit-competencyInput");
+    let inputValue = inputElement.value.trim();
+
+    if (inputValue !== "") {
+      competency.push(inputValue);
+      let newItem = document.createElement("li");
+      newItem.classList.add("competency-badge", "badge");
+      newItem.innerHTML = `${inputValue} <span class="close">&times;</span>`;
+
+      newItem.querySelector(".close").addEventListener("click", function () {
+        this.parentElement.remove();
+      });
+
+      document.getElementById("edit-competencyList").appendChild(newItem);
+      inputElement.value = "";
+    }
+  }
+
+
+
+  
+
 
 
 
@@ -282,6 +313,11 @@
 
 
 
+  document.getElementById('editTeacherForm').addEventListener('submit', function () {
+    document.getElementById('edit-competencyInput').value = competency
+  })
+
+
 
 
 
@@ -293,12 +329,14 @@
     editModal.addEventListener('show.bs.modal', function (event) {
       var button = event.relatedTarget; // Botão que acionou o modal
 
+      var teacherId = button.getAttribute('data-edit-id');
       var teacherName = button.getAttribute('data-edit-username');
       var teacherEducation = button.getAttribute('data-edit-education');
       var teacherArea = button.getAttribute('data-edit-area')
       var teacherCompetency = button.getAttribute('data-edit-competency')
 
       // Preencher os campos do modal com as informações do usuário
+      document.getElementById('edit-teacher-id').value = teacherId;
       document.getElementById('edit-teacherName').value = teacherName;
       document.getElementById('edit-teacherEducation').value = teacherEducation;
       document.getElementById('edit-teacherArea').value = teacherArea;
@@ -309,6 +347,7 @@
       const arr = JSON.parse(formattedStr);
 
       arr.forEach((el) => {
+        competency.push(el)
         let newItem = document.createElement("li");
         newItem.classList.add("competency-badge", "badge");
         newItem.innerHTML = `${el} <span class="close">&times;</span>`;
@@ -318,10 +357,9 @@
           this.parentElement.remove();
         });
 
+
         document.getElementById("edit-competencyList").appendChild(newItem);
-
       });
-
     });
   });
 
