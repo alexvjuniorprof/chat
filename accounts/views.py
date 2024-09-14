@@ -1,6 +1,5 @@
-from django.shortcuts import render, redirect
 from django.contrib import auth, messages
-
+from django.shortcuts import redirect, render
 
 
 def login(request):
