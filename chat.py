@@ -1,7 +1,8 @@
-import pymongo
-import locale
-import datetime
 import calendar
+import datetime
+import locale
+
+import pymongo
 
 locale.setlocale(locale.LC_TIME, "pt_BR.UTF-8")
 
