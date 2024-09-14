@@ -1,19 +1,17 @@
 import json
-from django.shortcuts import render, redirect
-from django.http import FileResponse, HttpResponse, JsonResponse
+
 import google.generativeai as genai
-from django.contrib.auth.decorators import login_required
-
-
-from .decorators import update_password
 from django.contrib.auth import login
-from .models import CustomUser, Teacher, Briefing
+from django.contrib.auth.decorators import login_required
+from django.http import FileResponse, HttpResponse, JsonResponse
+from django.shortcuts import redirect, render
+from django.views.decorators.csrf import csrf_exempt
+
+from chatbot.services import generate_doc
 from questions.models import Question
 
-from django.views.decorators.csrf import csrf_exempt
-from chatbot.services import generate_doc
-
-
+from .decorators import update_password
+from .models import Briefing, CustomUser, Teacher
 
 # Configurar a API do Google Gemini
 genai.configure(api_key="AIzaSyAMBJfbMpW5iqt3XsqFjyIdhfFbfU7YbkE")
