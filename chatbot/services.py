@@ -5,58 +5,56 @@ from docx.enum.table import WD_ALIGN_VERTICAL
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement, ns
 from docx.oxml.ns import nsdecls, qn
-from docx.shared import Inches
+from docx.shared import Inches, Pt
 
 data = {
-    "data": "2023-03-08",
-    "cliente": "Teste Cliente",
-    "destinatario": "Público",
-    "titulo": "Treinamento Avançado em Prestação de Serviços e Produtos",
-    "objetivo": "Ampliar e aprimorar o conhecimento e habilidades técnicas dos profissionais envolvidos na prestação de serviços e produtos, visando otimizar o atendimento ao cliente e fortalecer a competitividade da organização.",
-    "periodo": "10 dias corridos (com base na carga horária total)",
+    "data": "14/09/2024",
+    "cliente": "oi",
+    "destinatario": "oi",
+    "titulo": "Capacitação em Serviços e Produtos para a oi",
+    "objetivo": "O principal objetivo dessa capacitação é difundir e repassar aos colaboradores da oi os conhecimentos e habilidades necessárias para aprimorar a prestação de serviços e produtos oferecidos pela empresa.",
+    "periodo": "3 meses (previsto)",
     "detalhamento_proposta": [
         {
-            "titulo_etapa": "Módulo 1: Fundamentos de Atendimento ao Cliente",
+            "titulo_etapa": "Módulo 1: Conhecendo os Serviços e Produtos oi",
             "carga_horaria_necessaria": "20 horas",
-            "publico_alvo": "Profissionais de atendimento, gestores e supervisores",
-            "objetivo_da_etapa": "Aprimorar as competências de comunicação, relacionamento interpessoal e resolução de conflitos, visando proporcionar um atendimento excepcional ao cliente.",
+            "publico_alvo": "Toda a equipe de atendimento e vendas",
+            "objetivo_da_etapa": "Apresentar e detalhar os serviços e produtos oferecidos pela oi, bem como as suas características, funcionalidades e benefícios.",
             "conteudo_programatico": [
-                "Técnicas de comunicação eficaz",
-                "Empatia e escuta ativa",
-                "Gestão de conflitos e reclamações",
-                "Atendimento personalizado e segmentado",
-                "Avaliação e mensuração do atendimento",
-            ],
+                "Histórico e evolução da oi",
+                "Portfólio completo de serviços e produtos",
+                "Análise do mercado e da concorrência",
+                "Estratégias de vendas e atendimento"
+            ]
         },
         {
-            "titulo_etapa": "Módulo 1: Fundamentos de Atendimento ao Cliente",
-            "carga_horaria_necessaria": "20 horas",
-            "publico_alvo": "Profissionais de atendimento, gestores e supervisores",
-            "objetivo_da_etapa": "Aprimorar as competências de comunicação, relacionamento interpessoal e resolução de conflitos, visando proporcionar um atendimento excepcional ao cliente.",
+            "titulo_etapa": "Módulo 2: Técnicas de Atendimento e Vendas",
+            "carga_horaria_necessaria": "40 horas",
+            "publico_alvo": "Equipe de atendimento e vendas",
+            "objetivo_da_etapa": "Desenvolver habilidades de atendimento ao cliente e técnicas de vendas eficazes, com foco na satisfação do cliente.",
             "conteudo_programatico": [
-                "Técnicas de comunicação eficaz",
-                "Empatia e escuta ativa",
+                "Técnicas de comunicação e relacionamento interpessoal",
                 "Gestão de conflitos e reclamações",
-                "Atendimento personalizado e segmentado",
-                "Avaliação e mensuração do atendimento",
-            ],
+                "Identificação e antecipação das necessidades do cliente",
+                "Técnicas de negociação e fechamento de vendas"
+            ]
         },
         {
-            "titulo_etapa": "Módulo 1: Fundamentos de Atendimento ao Cliente",
+            "titulo_etapa": "Módulo 3: Gestão de Serviços e Produtos",
             "carga_horaria_necessaria": "20 horas",
-            "publico_alvo": "Profissionais de atendimento, gestores e supervisores",
-            "objetivo_da_etapa": "Aprimorar as competências de comunicação, relacionamento interpessoal e resolução de conflitos, visando proporcionar um atendimento excepcional ao cliente.",
+            "publico_alvo": "Equipes de gestão e supervisão",
+            "objetivo_da_etapa": "Capacitar gestores e supervisores na gestão eficaz de serviços e produtos, otimizando processos e garantindo a qualidade.",
             "conteudo_programatico": [
-                "Técnicas de comunicação eficaz",
-                "Empatia e escuta ativa",
-                "Gestão de conflitos e reclamações",
-                "Atendimento personalizado e segmentado",
-                "Avaliação e mensuração do atendimento",
-            ],
-        },
+                "Planejamento e organização de serviços e produtos",
+                "Gestão de equipes e desempenho",
+                "Controle de qualidade e indicadores de desempenho",
+                "Atendimento a reclamações e resolução de problemas"
+            ]
+        }
     ],
-    "carga_horaria_total": "65 horas",
-    "valor_investimento": "R$ 5.000,00",
+    "carga_horaria_total": "80 horas",
+    "valor_investimento": "R$ 10.000,00",
+    "type": "public"
 }
 
 REPLACEMENTS = {
@@ -68,6 +66,7 @@ REPLACEMENTS = {
     "{periodo}": "periodo",
     "{carga_horaria_total}": "carga_horaria_total",
     "{valor_investimento}": "valor_investimento",
+    "{type}": "type",
 }
 
 SCHEMA_DETALHAMENTO_PROPOSTA = {
@@ -88,6 +87,9 @@ def replace_text_in_doc(doc, data_json):
 def replace_paragraph(doc, data_json):
     for paragraph in doc.paragraphs:
         for key, value in REPLACEMENTS.items():
+            if paragraph.text == '{type}':
+                insert_private_or_public(paragraph, data_json["type"])
+                break
             if key in paragraph.text:
                 paragraph.text = paragraph.text.replace(key, data_json[value])
 
@@ -145,7 +147,7 @@ def insert_line_information(table, key, value):
 def set_cell_border(cell, **kwargs):
     """
     Define bordas para uma célula. Os argumentos aceitos em kwargs são:
-    top, left, bottom, right e os valores podem ser: 
+    top, left, bottom, right e os valores podem ser:
     {"sz": tamanho, "val": "single", "color": "000000", "space": "0"}
     """
     tc = cell._tc
@@ -168,6 +170,41 @@ def set_cell_border(cell, **kwargs):
             element.set(qn('w:color'), kwargs[edge].get(
                 "color", "000000"))  # Cor da borda
             tcBorders.append(element)
+
+
+def insert_private_or_public(paragraph, type: str):
+    if type == "private":
+        texts_insert = [
+            ("Empresa privada: ", True),  # Negrito
+            ("      • Ato Constitutivo, Estatuto ou Contrato Social em vigor, acompanhado da última Alteração Contratual, ou a última Alteração Contratual Consolidada, se houver devidamente registrados.\n", False),
+            ("      • Ata de eleição da Diretoria e/ou Conselho de Administração, quando se aplicar.\n", False),
+            ("      • Procuração, quando necessário.\n", False),
+            ("      • Cópia do comprovante de inscrição no cadastro nacional de pessoas jurídicas (CNPJ).\n", False),
+            ("      • Cópia da Identidade e do CPF do representante legal / administrador.\n", False),
+            ("      • Nome, CPF e e-mail individual do representante legal e da testemunha que assinará o instrumento contratual.\n", False),
+            ("      • Proposta final apresentada e aprovada.\n", False),
+            ("      • Data dos pagamentos de acordo com os possíveis parcelamentos.\n", False)
+        ]
+    else:
+
+        texts_insert = [
+            ("Ente público:\n", True),  # Negrito
+            ("      • Minuta do Contrato emitida pelo Ente Público\n", False),
+            ("      • Ato Administrativo de nomeação da autoridade máxima do Ente Público.\n", False),
+            ("      • Ato Administrativo para designação de responsável autorizando a delegação de atribuições para assinatura de contratos/convênios.\n", False),
+            ("      • Nome, CPF e e-mail individual do representante legal e da testemunha que assinará o instrumento contratual, caso o ente público aceite.\n", False),
+            ("      • Proposta final apresentada e aprovada.\n", False),
+            ("      • Data dos pagamentos de acordo com os possíveis parcelamentos.\n", False)
+        ]
+
+    paragraph.clear()
+    for text, is_bold in texts_insert:
+        run = paragraph.add_run(text)
+        run.bold = is_bold
+        if is_bold:
+            run.font.size = Pt(14)
+        else:
+            run.font.size = Pt(12)
 
 
 def generate_doc(data_json):
