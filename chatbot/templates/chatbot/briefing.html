@@ -4,7 +4,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Briefing</title>
+    <title>Solicitar Proposta</title>
     <link
       href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
@@ -12,26 +12,30 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light px-4">
-        <a class="navbar-brand text-white" href="#"><img class="logo" src="{% static 'img/logo-transparent.png' %}" alt=""></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </nav>
-    <div class="container w-50 my-5">
-        <h1 class="mb-4">Formulário para geração de Proposta</h1>
+    <div class="menu">
+      <div class="logo">
+          <img
+            class="logo"
+            src="{% static 'img/logo-transparent.png' %}"
+            alt=""
+            height="30px"
+        />
+      </div>
+    </div>
+    <div class="container w-50 py-5">
+        <h1 class="my-4">Formulário para geração de Proposta</h1>
       <form method="POST"> {% csrf_token %}
         <div class="form-group">
           <label for="">Telefone</label>
-          <input type="text" class="form-control" name="phone"/>
+          <input required type="text" class="form-control" name="phone"/>
         </div>
         <div class="form-group">
           <label for="">Email</label>
-          <input type="text" class="form-control" name="email" />
+          <input required type="text" class="form-control" name="email" />
         </div>
         <div class="form-group">
           <label for="">Empresa</label>
-          <input type="text" class="form-control" name="question_1" />
+          <input required type="text" class="form-control" name="question_1" />
         </div>
         <div class="form-group">
           <label for="">Ramo</label>
@@ -50,7 +54,7 @@
         </div>
         <div class="form-group">
           <label for="">Principal negócio</label>
-          <input type="text" class="form-control" name="question_3" />
+          <input required type="text" class="form-control" name="question_3" />
         </div>
         <div class="form-group">
           <label for="">Colaboradores</label>
@@ -65,68 +69,68 @@
         </div>
         <div class="form-group">
           <label for="">Qual a missão, visão e valores da empresa?</label>
-          <input type="text" class="form-control" name="question_5" />
+          <input required type="text" class="form-control" name="question_5" />
         </div>
         <div class="form-group">
           <label for="">Quais os diferenciais essenciais da empresa?</label>
-          <input type="text" class="form-control" name="question_6" />
+          <input required type="text" class="form-control" name="question_6" />
         </div>
         <div class="form-group">
           <label for=""
             >Quais suas principais necessidades? Como podemos ajuda-los?</label
           >
-          <input type="text" class="form-control" name="question_7" />
+          <input required type="text" class="form-control" name="question_7" />
         </div>
         <div class="form-group">
           <label for=""
             >Essas necessidades foram geradas em função de algum problema em
             especial? Como surgiu essa demanda?</label
           >
-          <input type="text" class="form-control" name="question_8" />
+          <input required type="text" class="form-control" name="question_8" />
         </div>
         <div class="form-group">
           <label for=""
             >Além das necessidades relatadas, existe alguma outra que você
             gostaria de relatar?</label
           >
-          <input type="text" class="form-control" name="question_9"/>
+          <input required type="text" class="form-control" name="question_9"/>
         </div>
         <div class="form-group">
           <label for="">Qual o objetivo principal da capacitação?</label>
-          <input type="text" class="form-control" name="question_10" />
+          <input required type="text" class="form-control" name="question_10" />
         </div>
         <div class="form-group">
           <label for=""
             >Quais os principais temas que você acredita que devem ser
             trabalhados nesta formação?
           </label>
-          <input type="text" class="form-control" name="question_11" />
+          <input required type="text" class="form-control" name="question_11" />
         </div>
         <div class="form-group">
           <label for=""
             >Quem deverá participar da capacitação? (público-alvo) Quantas
             pessoas aproximadamente?</label
           >
-          <input type="text" class="form-control" name="question_12" />
+          <input required type="text" class="form-control" name="question_12" />
         </div>
         <div class="form-group">
           <label for=""
             >Qual o nível médio de formação(escolaridade) do
             público-alvo?</label
           >
-          <input type="text" class="form-control" name="question_13"/>
+          <input required type="text" class="form-control" name="question_13"/>
         </div>
         <div class="form-group">
           <label for="">
             A capacitação fará parte de um programa de treinamento?
           </label>
-          <input type="text" class="form-control" name="question_14" />
+          <input required type="text" class="form-control" name="question_14" />
         </div>
         <div class="form-group">
           <label for="">
             Outras observações:
           </label>
-          <textarea class="form-control" name="question_15" id=""></textarea>
+          <textarea required class="form-control" name="question_15" id=""></textarea>
         </div>
         <button type="submit" class="btn btn-success mb-5">Gerar Proposta</button>
       </form>

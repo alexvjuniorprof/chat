@@ -22,7 +22,7 @@ model = genai.GenerativeModel("gemini-pro")
 def chat_view(request):
     request.session['chat_history'] = []
     array_questions = Question.objects.all()
-    return render(request, 'chatbot/chat.html', {'array_questions':array_questions})
+    return render(request, 'chatbot/chat.html', {'array_questions':array_questions.values()})
 
 def send_message(request):
     if request.method == 'POST':
@@ -98,6 +98,25 @@ def create_user(request):
     
     return redirect('list-users')
 
+
+def edit_user(request):
+    id = request.POST['id-user']
+    email = request.POST['email']
+    admin = request.POST['admin']
+    active = request.POST['active']
+    
+    user = CustomUser.objects.get(id=id)
+    user.email = email
+    user.is_superuser = admin
+    user.is_active = active
+    user.save()
+    return redirect('list-users')
+
+def delete_user(request, id):
+    CustomUser.objects.get(id=id).delete()
+    return redirect('list-users')
+
+
 def create_teacher(request):
     name = request.POST['name']
     education = request.POST['education']
@@ -106,6 +125,28 @@ def create_teacher(request):
     Teacher.objects.create(name=name, education=education, area=area, competency=competency)
     return redirect('list-teachers')
     
+
+def edit_teacher(request):
+    id = request.POST['teacher-id']
+    name = request.POST['name']
+    education = request.POST['education']
+    area = request.POST['area']
+    competency = request.POST['competency']
+    print(competency)
+    teacher = Teacher.objects.get(id=id)
+
+    teacher.name = name
+    teacher.education = education
+    teacher.area = area
+    teacher.competency = competency
+    teacher.save()
+
+    return redirect('list-teachers')   
+
+
+def delete_teacher(request, id):
+    Teacher.objects.get(id=id).delete()
+    return redirect('list-teachers')   
     
     
 @csrf_exempt
@@ -211,3 +252,14 @@ def form_briefing(request):
 
     else:
         return render(request, 'chatbot/briefing.html')    
+
+
+
+
+
+
+
+
+
+def testchat(request):
+    return render(request, 'chatbot/testchat.html')
