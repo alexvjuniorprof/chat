@@ -5,7 +5,8 @@
   style="padding: 30px !important; max-width: 1200px !important"
 >
   <div class="align-items-center d-flex justify-content-between">
-    <h4 class="mb-0">Solicitações de Propostas</h4>
+    <h4 class="mb-0">Solicitações de Propostas Externas <i title="Copiar link do formulário" id="copyBtn" style="cursor: pointer;" class="fa-solid fa-link"></i> </h4>
+    
     <input
       class="form-control my-3 w-25 position-right"
       id="myInput"
@@ -17,7 +18,7 @@
   <table class="table">
     <thead class="table-dark">
       <tr>
-        <th scope="col">Id</th>
+        <th scope="col">Nome</th>
         <th scope="col">Email</th>
         <th scope="col">Telefone</th>
         <th scope="col">Data da proposta</th>
@@ -27,7 +28,7 @@
     <tbody id="myTable">
       {% for proposal in proposals %}
       <tr>
-        <th scope="row">{{ proposal.id }}</th>
+        <th scope="row">{{ proposal.name }}</th>
         <td>
           <a
             href="#"
@@ -70,7 +71,7 @@
           {% if proposal.completed %}
           <a
             href="#"
-            class="generateProposa"
+            class="generateProposal"
             data-id="{{ proposal.id }}"
             data-email="{{ proposal.email }}"
             data-phone="{{ proposal.phone }}"
@@ -128,7 +129,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="proposalModalLabel">
-          Detalhes da Proposta
+          Detalhes da Solicitação
         </h5>
         <button
           type="button"
@@ -421,6 +422,19 @@
 </div>
 
 <script>
+
+
+document.getElementById('copyBtn').addEventListener('click', function() {
+      // O link que será copiado
+      var link = "{{ request.scheme }}://{{ request.get_host }}{% url 'briefing' %}";
+
+      // Copiando o texto para a área de transferência
+      navigator.clipboard.writeText(link).catch(function(err) {
+        console.error('Falha ao copiar o link', err);
+      });
+    });
+
+
   $(document).ready(function () {
     $("#myInput").on("keyup", function () {
       var value = $(this).val().toLowerCase();
@@ -446,6 +460,8 @@
     });
 
     $(document).on("click", ".generateProposal", function () {
+      console.log('Gerando proposta...');
+      
       var prompt = `
             Você é um sistema de geração de propostas corporativas. 
             Informações fornecidas pelo cliente: 

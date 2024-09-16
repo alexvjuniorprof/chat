@@ -206,27 +206,31 @@ def update_proposal(request):
 
 
 def form_briefing(request):
+    return render(request, 'chatbot/briefing.html')    
 
-    if request.method == 'POST':
-        phone = request.POST.get('phone')
-        email = request.POST.get('email')
-        question_1 = request.POST.get('question_1')
-        question_2 = request.POST.get('question_2')
-        question_3 = request.POST.get('question_3')
-        question_4 = request.POST.get('question_4')
-        question_5 = request.POST.get('question_5')
-        question_6 = request.POST.get('question_6')
-        question_7 = request.POST.get('question_7')
-        question_8 = request.POST.get('question_8')
-        question_9 = request.POST.get('question_9')
-        question_10 = request.POST.get('question_10')
-        question_11 = request.POST.get('question_11')
-        question_12 = request.POST.get('question_12')
-        question_13 = request.POST.get('question_13')
-        question_14 = request.POST.get('question_14')
-        question_15 = request.POST.get('question_15')
 
-        Briefing.objects.create(
+def generate_prosal(request):
+    name = request.POST.get('name')
+    phone = request.POST.get('phone')
+    email = request.POST.get('email')
+    question_1 = request.POST.get('question_1')
+    question_2 = request.POST.get('question_2')
+    question_3 = request.POST.get('question_3')
+    question_4 = request.POST.get('question_4')
+    question_5 = request.POST.get('question_5')
+    question_6 = request.POST.get('question_6')
+    question_7 = request.POST.get('question_7')
+    question_8 = request.POST.get('question_8')
+    question_9 = request.POST.get('question_9')
+    question_10 = request.POST.get('question_10')
+    question_11 = request.POST.get('question_11')
+    question_12 = request.POST.get('question_12')
+    question_13 = request.POST.get('question_13')
+    question_14 = request.POST.get('question_14')
+    question_15 = request.POST.get('question_15')
+
+    Briefing.objects.create(
+            name=name,
             phone=phone,
             email=email,
             question_1=question_1,
@@ -246,13 +250,7 @@ def form_briefing(request):
             question_15=question_15
         )
 
-        return redirect('briefing')
-        
-
-
-    else:
-        return render(request, 'chatbot/briefing.html')    
-
+    return JsonResponse({'message': 'Proposta enviada com sucesso.'}, status=200)
 
 
 

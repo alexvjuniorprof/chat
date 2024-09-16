@@ -16,6 +16,7 @@ class Teacher(models.Model):
         return self.name
 
 class Briefing(models.Model):
+    name = models.CharField(max_length=255)
     phone = models.CharField(max_length=255)
     email = models.EmailField()
     question_1 = models.CharField(max_length=255)

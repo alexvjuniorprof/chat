@@ -23,6 +23,7 @@ urlpatterns = [
     
     
     path('briefing/', views.form_briefing, name='briefing'),
+    path('generate_proposal/', views.generate_prosal, name='generate_proposal'),
    
    
     path('download_doc/', views.download_doc, name='download_doc'),
