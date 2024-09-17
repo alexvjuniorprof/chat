@@ -284,7 +284,7 @@
 
 
     const originalText = button.innerHTML;
-    button.disabled = true; 
+    button.disabled = true;
 
 
     try {
@@ -384,8 +384,19 @@
         $('#message').prop('disabled', false);
         $('#send').prop('disabled', false);
         createOptions();
-      }
-      else {
+      } else if (currentQuestion === 6) {
+        $('#message').prop('disabled', true);
+        $('#send').prop('disabled', true);
+        createOptions();
+      } else if (currentQuestion === 8) {
+        $('#message').prop('disabled', true);
+        $('#send').prop('disabled', true);
+        createOptions();
+      } else if (currentQuestion === 10) {
+        $('#message').prop('disabled', true);
+        $('#send').prop('disabled', true);
+        createOptions();
+      } else {
         $('#message').prop('disabled', false);
         $('#send').prop('disabled', false);
         $('#options').empty();
@@ -403,6 +414,12 @@
       options = ["Ação extensiva", "Curso", "Consultoria"];
     } else if (currentQuestion === 4) {
       options = ["Gerar Automaticamente"];
+    } else if (currentQuestion === 6) {
+      options = ["Sim", "Não"];
+    } else if (currentQuestion === 8) {
+      options = ["Sim", "Não"];
+    } else if (currentQuestion === 10) {
+      options = ["Sim", "Não"];
     }
     var optionsHtml = '';
     options.forEach(function (option) {
@@ -413,9 +430,26 @@
     $('.option-card').click(function () {
       var selectedOption = $(this).text();
       $('#chatbox').append('<div class="chat-message user"><div class="message">' + selectedOption + '</div></div>');
-      response.push(selectedOption);
+
+      if (selectedOption == "Não" && currentQuestion == 6) {
+        response.push(selectedOption == "Não" ? '' : selectedOption);
+        currentQuestion++
+      }
+      else if (selectedOption == "Não" && currentQuestion == 8) {
+        currentQuestion++
+        response.push(selectedOption == "Não" ? '' : selectedOption);
+      }
+      else if (selectedOption == "Não" && currentQuestion == 10) {
+        currentQuestion++
+        sendMessage()
+      }
+
+      response.push(selectedOption == "Não" ? '' : selectedOption);
       $('#options').empty();
       currentQuestion++;
+      console.log(currentQuestion);
+
+
       askQuestion();
     });
   }
@@ -614,6 +648,25 @@
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
         console.log('Download gerado com sucesso.');
+
+        $('.chat-message.bot:last-child .message').html(`
+            <div class="container container-options d-flex">
+                      <div id="viewProposalBtn">
+                          <button class="card-body btn-options" type="button" data-toggle="modal" data-target="#proposalModal">Visualizar proposta</button>
+                      </div>
+                      <div id="editProposalBtn">
+                          <button class="card-body btn-options" type="button" data-toggle="modal" data-target="#editproposalModal">Editar proposta</button>
+                      </div>
+                      <div id="exportProposalBtn">
+                          <button class="card-body btn-options">Exportar Proposta</button>
+                      </div>
+                      <div  onclick="location.reload()">
+                          <button class="card-body btn-info btn-options">Nova Proposta</button>
+                      </div>
+              </div>
+        `)
+
+        
       },
       error: function (xhr, status, error) {
         console.log(`Erro: ${error}`);
@@ -645,7 +698,7 @@
         JSON.parse(proposal)
         JSON.stringify(proposal)
         var optionsHtml = `
-                  <div class="container d-flex">
+                  <div class="container container-options d-flex">
                       <div id="viewProposalBtn">
                           <button class="card-body btn-options" type="button" data-toggle="modal" data-target="#proposalModal">Visualizar proposta</button>
                       </div>
@@ -691,20 +744,20 @@
   function sendMessage() {
 
 
-
     var message = $('#message').val();
-    if (message.trim() === '') return;
-
-    $('#chatbox').append('<div class="chat-message user"><div class="message">' + message + '</div></div>');
     response.push(message);
+    message ? $('#chatbox').append('<div class="chat-message user"><div class="message">' + message + '</div></div>') : '';
     $('#message').val('');
+
+
 
     if (currentQuestion < questions.length - 1) {
       currentQuestion++;
+      if (message.trim() === '') return;
       askQuestion();
     } else {
       console.log(response);
-      
+
       $('#message').prop('disabled', true);
       $('#send').prop('disabled', true);
       prompText = `
@@ -738,7 +791,10 @@
                   ],
                   "carga_horaria_total": "${response[6]}",
                   "valor_investimento": "",
-                  "type": "${response[2]}"
+                  "type": "${(response[2] == "Público") ? "public" : "private"}",
+                  "atribuicao_senac": "${response[9]}"(não alterar se estiver vazio),
+                  "atribuicao_cliente": "${response[11]}"(não alterar se estiver vazio)
+                  
   }
                   `;
 
