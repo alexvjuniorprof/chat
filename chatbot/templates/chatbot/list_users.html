@@ -1,4 +1,5 @@
 {% extends 'base.html' %} {% block main %}
+{% load static %}
 
 <!-- LIST USER MODAL -->
 
@@ -97,9 +98,9 @@
 <!-- ##################### -->
 
 <div class="container my-5" style="padding: 30px !important; max-width: 1200px !important">
-  <div class="align-items-center d-flex justify-content-between">
+  <div class="align-items-center d-flex justify-content-between position-relative">
     <!-- Button trigger modal -->
-    <button type="button" class="add-professor-btn" style="height: 40px" data-bs-toggle="modal"
+    <button type="button" class="add-professor-btn user-btn" data-bs-toggle="modal"
       data-bs-target="#exampleModal">
       + Adicionar Usuário
     </button>
@@ -147,10 +148,9 @@
       </div>
     </div>
 
-    <input class="search-input" id="myInput" type="text" placeholder="Nome do usuário" />
   </div>
 
-  <table class="table">
+  <table class="table" id="userTable">
     <thead class="table-dark">
       <tr>
         <th scope="col">Id</th>
@@ -167,7 +167,7 @@
       <tr>
         <th scope="row">{{user.id}}</th>
         <td>
-          <a type="button" class="list-user-btn" style="height: 40px" data-bs-toggle="modal" data-bs-target="#listModal"
+          <a type="button" class="list-user-btn" data-bs-toggle="modal" data-bs-target="#listModal"
             data-list-id="{{user.id}}" , data-list-username="{{ user.username }}" data-list-email="{{ user.email }}"
             data-list-is-superuser="{% if user.is_superuser %}Sim{% else %}Não{% endif %}"
             data-list-is-active="{% if user.is_active %}Habilitado{% else %}Desabilitado{% endif %}">{{user.username}}
@@ -183,7 +183,7 @@
           {% endif %}
         </td>
         <td>
-          <i type="button" style="height: 40px" data-bs-toggle="modal" data-bs-target="#editModal" data-id="{{user.id}}"
+          <i type="button" data-bs-toggle="modal" data-bs-target="#editModal" data-id="{{user.id}}"
             data-username="{{ user.username }}" data-email="{{ user.email }}"
             data-is-superuser="{% if user.is_superuser %}Sim{% else %}Não{% endif %}"
             data-is-active="{% if user.is_active %}Habilitado{% else %}Desabilitado{% endif %}" title="Editar Usuário"
@@ -200,13 +200,24 @@
 </div>
 
 <script>
+
+
+new DataTable('#userTable', {
+    "language": {
+      "url": `{% static 'Portuguese-Brasil.json' %}`,
+      "search": "",
+      "searchPlaceholder": "Buscar Usuário" //
+    },
+    "pageLength": 9,
+    "pagingType": "numbers",
+    "lengthChange": false,
+    "info": false,
+    "columnDefs": [
+      { "orderable": false, "targets": [-1, -2] }  // Desativa ordenação para as duas últimas colunas
+    ]
+  });
+
   $(document).ready(function () {
-    $("#myInput").on("keyup", function () {
-      var value = $(this).val().toLowerCase();
-      $("#myTable tr").filter(function () {
-        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-      });
-    });
 
 
 

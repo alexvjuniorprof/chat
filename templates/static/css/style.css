@@ -78,6 +78,9 @@ body {
     margin-bottom: 20px;
 }
 
+
+
+
 .chat-box h3 {
     margin: 0;
     font-size: 22px;
@@ -304,6 +307,10 @@ body {
 }
 
 
+.list-user-btn{
+    vertical-align: middle !important;
+}
+
 
 
 
@@ -314,6 +321,11 @@ body {
 
 
 /* ################ LISTAR PROFESSORES ################ */
+
+.dt-paging{
+    color: white !important;
+}
+
 .competency-input-container {
     display: flex;
     flex-wrap: wrap;
@@ -389,6 +401,10 @@ body {
     padding: 5px 10px;
 }
 
+table.dataTable > tbody > tr > td{
+    padding: 16px 10px !important;
+}
+
 .menu .logout {
     padding: 8px 16px;
     border: 1px solid #F47C20;
@@ -419,6 +435,13 @@ body {
     margin-bottom: 20px;
 }
 
+
+.user-btn{
+    position: absolute;
+    top: 5px;
+    z-index: 1;
+}
+
 .add-professor-btn {
     padding: 10px 20px;
     background-color: #0D47A1;
@@ -435,8 +458,9 @@ body {
     transform: translateY(-2px);
 }
 
-.search-input {
+.dt-input {
     padding: 12px;
+    height: 2.2rem;
     font-size: 16px;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
@@ -444,7 +468,7 @@ body {
     transition: box-shadow 0.3s ease-in-out;
 }
 
-.search-input:focus {
+.dt-input:focus {
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
     border-color: #0D47A1;
     outline: none;
@@ -455,6 +479,30 @@ body {
     overflow-x: auto;
 }
 
+.div-button{
+    position: absolute;
+    top:35px;
+    z-index: 1;
+}
+
+
+.title-proposal{
+    position: absolute !important;
+    top: 45px;
+    z-index: 1;
+}
+
+
+.dt-paging-button{
+    background-color: #014ab892 !important;
+    color: white !important;
+}
+
+.current{
+    background-color: #0149b8 !important;
+    color: white !important;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -463,6 +511,7 @@ table {
 
 table th,
 table td {
+    vertical-align: middle !important;
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #e0e0e0;
@@ -483,7 +532,7 @@ table tr:nth-child(even) {
 }
 
 table tr:hover {
-    background-color: #f1f1f1;
+    background-color: #f1f1f1 !important;
 }
 
 .badge {
@@ -510,7 +559,7 @@ table tr:hover {
         margin: 0 10px;
     }
 
-    .search-input {
+    .dt-input {
         width: 100%;
         margin-top: 10px;
     }

@@ -128,15 +128,6 @@
         <h5>Detalhamento da Proposta</h5>
         <div id="inputproposalDetails"></div>
 
-        <h5>Carga Horária Total</h5>
-        <div class="input-group mb-3">
-          <input class="form-control" type="text" id="inputproposalTotalHours" />
-          <div class="input-group-append">
-            <button disabled class="btn btn-outline-secondary" type="button" title="Gerar novamente"
-              onclick="generateNewValue('inputproposalTotalHours', this)"><i
-                class="fa-solid fa-list-check text-white"></i></button>
-          </div>
-        </div>
 
         <h5>Valor do Investimento</h5>
         <div class="input-group mb-3">
@@ -278,9 +269,7 @@
   async function generateNewValue(inputId, button) {
 
 
-
     var actualValue = document.getElementById(inputId)
-    console.log(actualValue.value);
 
 
     const originalText = button.innerHTML;
@@ -290,10 +279,12 @@
     try {
       // Faz o post e espera a resposta do servidor
       let data = await $.post("{% url 'send_message' %}", {
-        'message': `Sabendo que a proposta foi ${proposal}, gere um novo texto, mantendo sentido a resposta anterior substituindo ${actualValue.value}. A resposta dever ter a estrutura: {"newValue":""}`,
+        'message': `Sabendo que a proposta foi ${proposal}, gere um novo valor, mantendo sentido a resposta anterior substituindo apenas o item ${actualValue.value}. A resposta dever ter a estrutura: {"newValue":""}`,
         'csrfmiddlewaretoken': '{{ csrf_token }}'
       });
 
+      console.log(data.response);
+      
       // Depois que a resposta chegar, atualize o valor
       actualValue.value = JSON.parse(data.response)['newValue'];
       console.log(actualValue.value);
@@ -350,7 +341,7 @@
 
 
 
-
+  var total_hours = 0; 
   var prompText = ''
   var proposal;
   var response = [];
@@ -554,7 +545,7 @@
         </div>
         <h6>${indexDetalhamento + 1}. Carga Horária</h5>
         <div class="input-group mb-3">
-          <input class="form-control" value="${item.carga_horaria_necessaria}" type="text" id="inputHours_${indexDetalhamento}">
+          <input class="form-control sum" value="${item.carga_horaria_necessaria}" type="text" id="inputHours_${indexDetalhamento}">
           <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button" title="Gerar novamente" onclick="generateNewValue('inputHours_${indexDetalhamento}', this)"><i class="fa-solid fa-list-check text-white"></i></button>
           </div>
@@ -595,6 +586,13 @@
 
   $(document).on('click', '#saveProposal', function () {
 
+    total_hours = 0
+
+    document.querySelectorAll('.sum').forEach((item)=>{
+      total_hours += parseInt(item.value)
+      console.log(total_hours);
+    })
+
     var updatedProposal = {
       data: $('#inputproposalDate').val(),
       destinatario: $('#inputproposalRecipient').val(),
@@ -602,8 +600,11 @@
       titulo: $('#inputproposalTitle').val(),
       objetivo: $('#inputproposalObjective').val(),
       periodo: $('#inputproposalPeriod').val(),
-      carga_horaria_total: $('#inputproposalTotalHours').val(),
+      carga_horaria_total: `${total_hours} horas`,
       valor_investimento: $('#inputproposalInvestment').val(),
+      type: (response[2] == "Público") ? "public" : "private",
+      atribuicao_senac:response[9],
+      atribuicao_cliente:response[11],
       detalhamento_proposta: JSON.parse(proposal).detalhamento_proposta.map((item, index) => {
         return {
           titulo_etapa: $(`#inputTitle_${index}`).val(),
@@ -789,7 +790,7 @@
                           ]
                       },
                   ],
-                  "carga_horaria_total": "${response[6]}",
+                  "carga_horaria_total": "${response[6]} (Esse valor deve ser sempre a soma de todas as horas da carga_horaria_necessaria)",
                   "valor_investimento": "",
                   "type": "${(response[2] == "Público") ? "public" : "private"}",
                   "atribuicao_senac": "${response[9]}"(não alterar se estiver vazio),
