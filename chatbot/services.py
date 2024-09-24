@@ -14,6 +14,8 @@ data = {
     "titulo": "Capacitação em Serviços e Produtos para a oi",
     "objetivo": "O principal objetivo dessa capacitação é difundir e repassar aos colaboradores da oi os conhecimentos e habilidades necessárias para aprimorar a prestação de serviços e produtos oferecidos pela empresa.",
     "periodo": "3 meses (previsto)",
+    "atribuicao_senac": "atribuicao_senac",
+    "atribuicao_cliente": "atribuicao_cliente",
     "detalhamento_proposta": [
         {
             "titulo_etapa": "Módulo 1: Conhecendo os Serviços e Produtos oi",
@@ -67,6 +69,8 @@ REPLACEMENTS = {
     "{carga_horaria_total}": "carga_horaria_total",
     "{valor_investimento}": "valor_investimento",
     "{type}": "type",
+    "{atribuicao_senac}":"atribuicao_senac",
+    "{atribuicao_cliente}":"atribuicao_cliente",
 }
 
 SCHEMA_DETALHAMENTO_PROPOSTA = {
