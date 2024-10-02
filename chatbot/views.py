@@ -1,4 +1,7 @@
 import json
+import secrets
+import string
+import threading
 
 import google.generativeai as genai
 from django.contrib.auth import login
@@ -6,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
-import threading
+
 from chatbot.services import generate_doc, send_email
 from questions.models import Question
 
@@ -155,26 +158,27 @@ def delete_teacher(request, id):
 
 @csrf_exempt
 def download_doc(request):
-    if request.method == "POST":
-        proposal = request.POST.get('proposal')
-        proposal_json = json.loads(proposal)
-        file = generate_doc(proposal_json)
+    if request.method != "POST":
+        return HttpResponse(status=405)
+    
+    proposal = request.POST.get('proposal')
+    proposal_json = json.loads(proposal)
+    file = generate_doc(proposal_json)
 
-        filename = "generated.docx"
-        response = FileResponse(file, as_attachment=True, filename=filename)
+    filename = "generated.docx"
+    response = FileResponse(file, as_attachment=True, filename=filename)
 
-        response['File-Path'] = file.name
+    response['File-Path'] = file.name
 
-        # Envia o e-mail em uma thread separada
-        email_thread = threading.Thread(
-            target=send_email_in_background,
-            args=(request.user.email, "Proposta Gerada GenIA", file.name)
-        )
-        email_thread.start()
+    # Envia o e-mail em uma thread separada
+    email_thread = threading.Thread(
+        target=send_email_in_background,
+        args=(request.user.email, "Proposta Gerada GenIA", file.name)
+    )
+    email_thread.start()
 
-        return response
+    return response
 
-    return HttpResponse(status=405)
 
 
 def list_proposals(request):
@@ -279,7 +283,15 @@ def reset_password(request):
         print("user not found")
         return
 
-    user.reset_password = True
+    password = gerar_senha_temporaria()
+    user.reset_password = False
+    user.set_password(password)
     user.save()
 
-    send_email(email, "Senha Temporária")
+    send_email(email, "Senha Temporária", body=f"SENHA TEMPORÁRIA: {password}")
+
+
+def gerar_senha_temporaria(tamanho=12):
+    caracteres = string.ascii_letters + string.digits
+    senha = ''.join(secrets.choice(caracteres) for i in range(tamanho))
+    return senha
