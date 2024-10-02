@@ -7,7 +7,7 @@ from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 import threading
-from chatbot.services import generate_doc, send_email_with_attachment
+from chatbot.services import generate_doc, send_email
 from questions.models import Question
 
 from .decorators import update_password
@@ -265,7 +265,21 @@ def testchat(request):
 
 def send_email_in_background(email, subject, file_path):
     try:
-        send_email_with_attachment(email, subject, file_path)
+        send_email(email, subject, file_path)
         print(f"E-mail enviado para {email}")
     except Exception as e:
         print(f"Erro ao enviar e-mail -> {e}")
+
+
+def reset_password(request):
+    email = request.POST['email']
+
+    user = CustomUser.objects.filter(email=email).first()
+    if not user:
+        print("user not found")
+        return
+
+    user.reset_password = True
+    user.save()
+
+    send_email(email, "Senha Temporária")

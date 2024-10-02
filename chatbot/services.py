@@ -101,7 +101,8 @@ def replace_paragraph(doc, data_json):
                 insert_private_or_public(paragraph, data_json["type"])
                 break
             if key in paragraph.text:
-                paragraph.text = paragraph.text.replace(key, data_json[value])
+                text_replace = data_json[value] if data_json[value] else ''
+                paragraph.text = paragraph.text.replace(key, text_replace)
 
 
 def insert_detalhamento_da_proposta(doc, detalhamento_proposta: list):
@@ -226,12 +227,7 @@ def generate_doc(data_json):
     return content_file
 
 
-def send_email_with_attachment(to_email, subject, file_path,  body=""):
-
-    with open(file_path, "rb") as f:
-        file_content = f.read()
-
-    file_name = file_path
+def send_email(to_email, subject, file_path=None,  body=""):
 
     # onfigs
     from_email = "geniapropostas@gmail.com"
@@ -251,8 +247,13 @@ def send_email_with_attachment(to_email, subject, file_path,  body=""):
     msg.attach(MIMEText(body, "plain"))
 
     # Se houver conteúdo de arquivo e nome do arquivo
-    if file_content and file_name:
+    if file_path:
+
         try:
+            with open(file_path, "rb") as f:
+                file_content = f.read()
+
+            file_name = file_path
             # Criar o objeto MIMEBase e adicionar o cabeçalho adequado
             part = MIMEBase("application", "octet-stream")
             part.set_payload(file_content)
