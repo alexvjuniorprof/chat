@@ -3,9 +3,15 @@ import time
 from docx import Document
 from docx.enum.table import WD_ALIGN_VERTICAL
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.oxml import OxmlElement, ns
-from docx.oxml.ns import nsdecls, qn
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 from docx.shared import Inches, Pt
+import smtplib
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 
 data = {
     "data": "14/09/2024",
@@ -69,8 +75,8 @@ REPLACEMENTS = {
     "{carga_horaria_total}": "carga_horaria_total",
     "{valor_investimento}": "valor_investimento",
     "{type}": "type",
-    "{atribuicao_senac}":"atribuicao_senac",
-    "{atribuicao_cliente}":"atribuicao_cliente",
+    "{atribuicao_senac}": "atribuicao_senac",
+    "{atribuicao_cliente}": "atribuicao_cliente",
 }
 
 SCHEMA_DETALHAMENTO_PROPOSTA = {
@@ -220,5 +226,76 @@ def generate_doc(data_json):
     return content_file
 
 
+def send_email_with_attachment(to_email, subject, file_path,  body=""):
+
+    with open(file_path, "rb") as f:
+        file_content = f.read()
+
+    file_name = file_path
+
+    # onfigs
+    from_email = "geniapropostas@gmail.com"
+    password = "hkjb rvli mzfq eaqb"
+
+    # Configurações do servidor SMTP (exemplo com Gmail)
+    smtp_server = "smtp.gmail.com"
+    smtp_port = 587  # Porta TLS
+
+    # Criação da mensagem
+    msg = MIMEMultipart()
+    msg["From"] = from_email
+    msg["To"] = to_email
+    msg["Subject"] = subject
+
+    # Corpo do e-mail
+    msg.attach(MIMEText(body, "plain"))
+
+    # Se houver conteúdo de arquivo e nome do arquivo
+    if file_content and file_name:
+        try:
+            # Criar o objeto MIMEBase e adicionar o cabeçalho adequado
+            part = MIMEBase("application", "octet-stream")
+            part.set_payload(file_content)
+            encoders.encode_base64(part)
+            part.add_header(
+                "Content-Disposition",
+                f"attachment; filename= {file_name}",
+            )
+
+            # Anexar o arquivo à mensagem
+            msg.attach(part)
+        except Exception as e:
+            print(f"Erro ao anexar o arquivo: {e}")
+            return
+
+    try:
+        # Conectar ao servidor SMTP
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()  # Inicializa a conexão TLS
+        server.login(from_email, password)  # Autentica no servidor SMTP
+
+        # Enviar o e-mail
+        text = msg.as_string()
+        server.sendmail(from_email, to_email, text)
+        print(f"E-mail enviado com sucesso para {to_email}")
+
+    except Exception as e:
+        print(f"Erro ao enviar o e-mail: {e}")
+
+    finally:
+        # Fechar a conexão SMTP
+        server.quit()
+
+
 if __name__ == '__main__':
-    generate_doc(data)
+    with open("modelo.docx", "rb") as f:
+        file_content = f.read()
+
+    file_name = "arquivo.txt"
+
+    send_email_with_attachment(
+        to_email="alexsandervieirajunior@gmail.com",
+        subject="Proposta Gerada GenIA",
+        file_content=file_content,
+        file_name=file_name
+    )

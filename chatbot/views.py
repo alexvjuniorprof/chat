@@ -6,8 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
-
-from chatbot.services import generate_doc
+import threading
+from chatbot.services import generate_doc, send_email_with_attachment
 from questions.models import Question
 
 from .decorators import update_password
@@ -17,12 +17,14 @@ from .models import Briefing, CustomUser, Teacher
 genai.configure(api_key="AIzaSyAMBJfbMpW5iqt3XsqFjyIdhfFbfU7YbkE")
 model = genai.GenerativeModel("gemini-pro")
 
+
 @login_required(redirect_field_name='login')
 @update_password
 def chat_view(request):
     request.session['chat_history'] = []
     array_questions = Question.objects.all()
-    return render(request, 'chatbot/chat.html', {'array_questions':array_questions.values()})
+    return render(request, 'chatbot/chat.html', {'array_questions': array_questions.values()})
+
 
 def send_message(request):
     if request.method == 'POST':
@@ -34,6 +36,7 @@ def send_message(request):
         request.session['chat_history'] = chat_history
         return JsonResponse({'message': message, 'response': response})
 
+
 def generate_response(message, request):
     chat_history = request.session.get('chat_history', [])
 
@@ -44,7 +47,6 @@ def generate_response(message, request):
     response = chat.send_message(message)
 
     return response.candidates[0].content.parts[0].text
-
 
 
 def update_password(request):
@@ -60,7 +62,7 @@ def update_password(request):
             update_user.save()
             login(request, update_user)
             return redirect('chat_view')
-            
+
         else:
             return redirect('update_password')
 
@@ -71,16 +73,16 @@ def update_password(request):
 @login_required(redirect_field_name='login')
 def list_users(request):
     users = CustomUser.objects.all().order_by('-id')
-    return render(request, 'chatbot/list_users.html', {'users':users})
+    return render(request, 'chatbot/list_users.html', {'users': users})
 
 
 @login_required(redirect_field_name='login')
 def list_teachers(request):
     teachers = Teacher.objects.all().order_by('-id')
-    
+
     for teacher in teachers:
         teacher.competency = teacher.competency.split(',')
-    return render(request, 'chatbot/list_teachers.html', {'teachers':teachers})
+    return render(request, 'chatbot/list_teachers.html', {'teachers': teachers})
 
 
 def create_user(request):
@@ -88,14 +90,14 @@ def create_user(request):
     email = request.POST['email']
     admin = request.POST['admin']
     password = request.POST['password']
-    
-    new_user = CustomUser.objects.create_user(username=username, email=email, password=password)
-    
+
+    new_user = CustomUser.objects.create_user(
+        username=username, email=email, password=password)
+
     if admin == '1':
         new_user.is_superuser = True
         new_user.save()
 
-    
     return redirect('list-users')
 
 
@@ -104,13 +106,14 @@ def edit_user(request):
     email = request.POST['email']
     admin = request.POST['admin']
     active = request.POST['active']
-    
+
     user = CustomUser.objects.get(id=id)
     user.email = email
     user.is_superuser = admin
     user.is_active = active
     user.save()
     return redirect('list-users')
+
 
 def delete_user(request, id):
     CustomUser.objects.get(id=id).delete()
@@ -122,9 +125,10 @@ def create_teacher(request):
     education = request.POST['education']
     area = request.POST['area']
     competency = request.POST['competency']
-    Teacher.objects.create(name=name, education=education, area=area, competency=competency)
+    Teacher.objects.create(name=name, education=education,
+                           area=area, competency=competency)
     return redirect('list-teachers')
-    
+
 
 def edit_teacher(request):
     id = request.POST['teacher-id']
@@ -141,36 +145,41 @@ def edit_teacher(request):
     teacher.competency = competency
     teacher.save()
 
-    return redirect('list-teachers')   
+    return redirect('list-teachers')
 
 
 def delete_teacher(request, id):
     Teacher.objects.get(id=id).delete()
-    return redirect('list-teachers')   
-    
-    
+    return redirect('list-teachers')
+
+
 @csrf_exempt
 def download_doc(request):
     if request.method == "POST":
         proposal = request.POST.get('proposal')
         proposal_json = json.loads(proposal)
         file = generate_doc(proposal_json)
-    
-        response = FileResponse(file, as_attachment=True, filename="generated.docx")
-        
+
+        filename = "generated.docx"
+        response = FileResponse(file, as_attachment=True, filename=filename)
+
         response['File-Path'] = file.name
-        
+
+        # Envia o e-mail em uma thread separada
+        email_thread = threading.Thread(
+            target=send_email_in_background,
+            args=(request.user.email, "Proposta Gerada GenIA", file.name)
+        )
+        email_thread.start()
+
         return response
 
-    return HttpResponse(status=405) 
-    
-    
+    return HttpResponse(status=405)
 
 
 def list_proposals(request):
     proposals = Briefing.objects.all().order_by('-id')
-    return render(request, 'chatbot/list_proposals.html', {'proposals':proposals})
-
+    return render(request, 'chatbot/list_proposals.html', {'proposals': proposals})
 
 
 def update_proposal(request):
@@ -185,8 +194,6 @@ def update_proposal(request):
     question_22 = request.POST.get('question_22')
     question_23 = request.POST.get('question_23')
     question_24 = request.POST.get('question_24')
-
-
 
     proposal = Briefing.objects.get(id=id)
     proposal.question_16 = question_16
@@ -204,9 +211,8 @@ def update_proposal(request):
     return HttpResponse("Proposta atualizada.")
 
 
-
 def form_briefing(request):
-    return render(request, 'chatbot/briefing.html')    
+    return render(request, 'chatbot/briefing.html')
 
 
 def generate_prosal(request):
@@ -230,34 +236,36 @@ def generate_prosal(request):
     question_15 = request.POST.get('question_15')
 
     Briefing.objects.create(
-            name=name,
-            phone=phone,
-            email=email,
-            question_1=question_1,
-            question_2=question_2,
-            question_3=question_3,
-            question_4=question_4,
-            question_5=question_5,
-            question_6=question_6,
-            question_7=question_7,
-            question_8=question_8,
-            question_9=question_9,
-            question_10=question_10,
-            question_11=question_11,
-            question_12=question_12,
-            question_13=question_13,
-            question_14=question_14,
-            question_15=question_15
-        )
+        name=name,
+        phone=phone,
+        email=email,
+        question_1=question_1,
+        question_2=question_2,
+        question_3=question_3,
+        question_4=question_4,
+        question_5=question_5,
+        question_6=question_6,
+        question_7=question_7,
+        question_8=question_8,
+        question_9=question_9,
+        question_10=question_10,
+        question_11=question_11,
+        question_12=question_12,
+        question_13=question_13,
+        question_14=question_14,
+        question_15=question_15
+    )
 
     return JsonResponse({'message': 'Proposta enviada com sucesso.'}, status=200)
 
 
-
-
-
-
-
-
 def testchat(request):
     return render(request, 'chatbot/testchat.html')
+
+
+def send_email_in_background(email, subject, file_path):
+    try:
+        send_email_with_attachment(email, subject, file_path)
+        print(f"E-mail enviado para {email}")
+    except Exception as e:
+        print(f"Erro ao enviar e-mail -> {e}")
