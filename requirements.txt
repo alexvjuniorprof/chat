@@ -7,7 +7,7 @@ charset-normalizer==3.3.2
 colorama==0.4.6
 distro==1.9.0
 dj-database-url==2.2.0
-Django==5.1
+Django==5.1.1
 dnspython==2.6.1
 google-ai-generativelanguage==0.6.6
 google-api-core==2.19.1
