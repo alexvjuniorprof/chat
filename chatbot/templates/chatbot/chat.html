@@ -423,14 +423,15 @@
       $('#chatbox').append('<div class="chat-message user"><div class="message">' + selectedOption + '</div></div>');
 
       if (selectedOption == "Não" && currentQuestion == 6) {
-        response.push(selectedOption == "Não" ? '' : selectedOption);
+        response.push(selectedOption == "Não" ? 'Sem carga horária' : selectedOption);
         currentQuestion++
       }
       else if (selectedOption == "Não" && currentQuestion == 8) {
         currentQuestion++
-        response.push(selectedOption == "Não" ? '' : selectedOption);
+        response.push(selectedOption == "Não" ? 'Sem atribuição' : selectedOption);
       }
       else if (selectedOption == "Não" && currentQuestion == 10) {
+        response.push(selectedOption == "Não" ? 'Sem atribuição' : selectedOption);
         currentQuestion++
         sendMessage()
       }
@@ -613,7 +614,7 @@
           objetivo_da_etapa: $(`#inputObjective_${index}`).val(),
           conteudo_programatico: [
             item.conteudo_programatico.map((el, num) => $(`#inputcontent_${index}_${num}`).val())
-          ]
+          ].toString().split(",")
         }
       })
 
@@ -694,7 +695,7 @@
 
       try {
 
-        proposal = data.response;
+        proposal = 'data.response';
         console.log(JSON.parse(proposal))
         JSON.parse(proposal)
         JSON.stringify(proposal)
@@ -723,7 +724,7 @@
           var optionsHtml = `
                   <div class="container d-flex">
                       <div class="option-card">
-                          <div class="card-body btn btn-info">Atualize a página e tente novamente.</div>
+                          <button onclick="window.location.reload()" class="card-body btn btn-info">Atualize a página e tente novamente.</button>
                       </div>
                   </div>
               `;
@@ -790,11 +791,11 @@
                           ]
                       },
                   ],
-                  "carga_horaria_total": "${response[6]} (Esse valor deve ser sempre a soma de todas as horas da carga_horaria_necessaria)",
+                  "carga_horaria_total": "${response[7]} Horas (Esse valor deve ser sempre a soma de todas as horas da carga_horaria_necessaria)",
                   "valor_investimento": "",
                   "type": "${(response[2] == "Público") ? "public" : "private"}",
-                  "atribuicao_senac": "${response[9]}"(não alterar se estiver vazio),
-                  "atribuicao_cliente": "${response[11]}"(não alterar se estiver vazio)
+                  "atribuicao_senac": "${(response[8] == "Sem atribuição") ? "Sem atribuição" : response[9]}",
+                  "atribuicao_cliente": "${(response[10] == "Sem atribuição") ? "Sem atribuição" : response[11]}"
                   
   }
                   `;
