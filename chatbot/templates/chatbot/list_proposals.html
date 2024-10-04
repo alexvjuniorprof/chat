@@ -42,7 +42,7 @@
         <td>{{ proposal.created_at|date:'d/m/Y' }}</td>
         <td>
           {% if proposal.completed %}
-          <a href="#" class="generateProposa" data-id="{{ proposal.id }}" data-email="{{ proposal.email }}"
+          <a href="#" class="generateProposal" data-id="{{ proposal.id }}" data-email="{{ proposal.email }}"
             data-phone="{{ proposal.phone }}" data-question_1="{{ proposal.question_1 }}"
             data-question_2="{{ proposal.question_2 }}" data-question_3="{{ proposal.question_3 }}"
             data-question_4="{{ proposal.question_4 }}" data-question_5="{{ proposal.question_5 }}"
@@ -57,8 +57,8 @@
             data-question_22="{{ proposal.question_22 }}" data-question_23="{{ proposal.question_23 }}"
             data-question_24="{{ proposal.question_24 }}" data-date="{{ proposal.created_at|date:'d/m/Y' }}">
             <div class="badge badge-pill badge-success p-2">
-              Completo
-              <!-- <i class="fa-solid fa-file-export"></i> -->
+              Gerar Proposta
+              <i class="fa-solid fa-file-export"></i>
             </div>
           </a>
           {% else %}
