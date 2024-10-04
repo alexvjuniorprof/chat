@@ -1,84 +1,84 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DataTables com Botão ao Lado do Campo de Busca</title>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <title>Chatbot Interface</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-    <style>
-        .dataTables_filter {
-            display: flex;
-            align-items: center;
-        }
-
-        .dataTables_filter label {
-            margin-right: 10px;
-        }
-
-        .dataTables_filter input {
-            margin-left: 5px;
-        }
-
-        .custom-button {
-            margin-left: 10px; /* Espaçamento entre o campo de busca e o botão */
-            padding: 5px 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-
-        .custom-button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/testchat.css' %}">
 </head>
 <body>
-    <div class="table-container">
-        <table id="example" class="display" style="width:100%">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Posição</th>
-                    <th>Escritório</th>
-                    <th>Idade</th>
-                    <th>Data de Início</th>
-                    <th>Salário</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>João Silva</td>
-                    <td>Desenvolvedor</td>
-                    <td>São Paulo</td>
-                    <td>30</td>
-                    <td>2019-04-25</td>
-                    <td>R$ 10.000</td>
-                </tr>
-                <!-- Adicione mais linhas conforme necessário -->
-            </tbody>
-        </table>
+<nav class="navbar navbar-expand-lg navbar-light bg-dark px-4">
+    <a class="navbar-brand text-white" href="#">GenIA</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link text-white" href="#">Listar Usuário</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="#">Adicionar Usuário</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white" href="#">Sair</a>
+            </li>
+        </ul>
     </div>
-
-    <script>
-        $(document).ready(function() {
-            var table = $('#example').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.13.1/i18n/pt-BR.json",
-                    "search": "Buscar:",
-                    "searchPlaceholder": "Digite para pesquisar..."
-                },
-                "pagingType": "numbers",
-                "lengthChange": false,
-                "info": false
-            });
-
-            // Adiciona um botão ao lado do campo de busca da DataTables
-            $('<button class="custom-button">Meu Botão</button>')
-                .appendTo('.dataTables_filter'); // Anexa o botão ao contêiner de busca
+</nav>
+<div class="aside-options">
+    <h5>Últimas conversas</h5>
+    <div class="card">
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus, in mollitia. Repellat, quia commodi debitis dolor obcaecati iure, quam eum nesciunt harum quasi quo quos delectus, laborum vitae provident facere?</p>
+    </div>
+</div>
+<div class="chat-container" style="margin-left: 320px;">
+    <div class="chat-box" id="chatbox">
+        {% for entry in chat_history %}
+            <div class="chat-message {% if entry.role == 'user' %}user{% else %}bot{% endif %}">
+                <div class="message">{{ entry.parts.0.text }}</div>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Digite sua mensagem" id="message">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="send">Enviar</button>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('#send').click(function() {
+            sendMessage();
         });
-    </script>
+        $('#message').keypress(function(event) {
+            if (event.which == 13) {
+                sendMessage();
+                event.preventDefault();
+            }
+        });
+    });
+    function sendMessage() {
+        var message = $('#message').val();
+        if (message.trim() === '') return;
+        $('#chatbox').append('<div class="chat-message user"><div class="message">' + message + '</div></div>');
+        $.post("{% url 'send_message' %}", {
+            'message': message,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        }, function(data) {
+            $('#chatbox').append('<div class="chat-message bot"><div class="message">' + data.response + '</div></div>');
+            $('#message').val('');
+            var chatBox = document.getElementById('chatbox');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        });
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

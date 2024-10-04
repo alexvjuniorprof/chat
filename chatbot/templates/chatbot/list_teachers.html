@@ -161,7 +161,7 @@
         <th scope="col">Formação</th>
         <th scope="col">Competências</th>
         <th style="width: 50px;"></th>
-        <th style="width: 50px;"></th>
+        <!-- <th style="width: 50px;"></th> -->
       </tr>
     </thead>
     <tbody>
@@ -181,13 +181,13 @@
           <div class="badge mb-2 p-2">{{items}}</div>
           {% endfor %}
         </td>
-        <td>
+        <!-- <td>
           <i type="button" data-bs-toggle="modal" data-bs-target="#editModal"
             data-bs-target="#editModal" data-edit-id="{{teacher.id}}" data-edit-username="{{ teacher.name }}"
             data-edit-education="{{ teacher.education }}" data-edit-area="{{teacher.area}}"
             data-edit-competency="{{teacher.competency}}" title="Editar Usuário"
             class="fa-regular fa-pen-to-square text-success edit-user-btn" style="cursor: pointer;"></i>
-        </td>
+        </td> -->
         <td>
           <i data-id="{{teacher.id}}" title="Deletar Usuário" class="fa-solid fa-trash-can text-danger deleteTeacher"
             style="cursor: pointer;"></i>

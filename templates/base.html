@@ -51,7 +51,7 @@
     <div class="menu-items">
       {% if request.user.is_superuser %}
       <a href="{% url 'list-proposals' %}">Solicitações de Propostas Externas</a>
-      <a href="{% url 'testchat' %}">Teste de prompt</a>
+      <!-- <a href="{% url 'testchat' %}">Teste de prompt</a> -->
       <a href="{% url 'list-teachers' %}">Professores</a>
       <a href="{% url 'list-users' %}">Usuários</a>
       {% endif %}
