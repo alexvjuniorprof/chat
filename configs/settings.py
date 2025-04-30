@@ -30,10 +30,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*', '10.10.8.45']
 
-######### LIBERAR ACESSO DE IPs #########
 CSRF_TRUSTED_ORIGINS = ['http://http://10.10.8.45:8000']
-MIDDLEWARE.remove('django.middleware.csrf.CsrfViewMiddleware')
-#########################################
+
 
 
 # Application definition
@@ -55,7 +53,6 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
