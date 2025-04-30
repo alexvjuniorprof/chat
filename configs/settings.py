@@ -30,7 +30,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*', '10.10.8.45']
 
+######### LIBERAR ACESSO DE IPs #########
 CSRF_TRUSTED_ORIGINS = ['http://http://10.10.8.45:8000']
+MIDDLEWARE.remove('django.middleware.csrf.CsrfViewMiddleware')
+#########################################
+
 
 # Application definition
 
