@@ -85,21 +85,21 @@ WSGI_APPLICATION = "configs.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 
-ssl_require = os.getenv("SSL_REQUIRE", "true") == "true"
-DATABASES = {
-    'default': dj_database_url.config(
-        default="postgres://myuser:mypassword@db:5432/mydb?sslmode=disable",
-        conn_max_age=600,
-        ssl_require=ssl_require
-    )
-}
+#ssl_require = os.getenv("SSL_REQUIRE", "true") == "true"
+#DATABASES = {
+#    'default': dj_database_url.config(
+#        default="postgres://myuser:mypassword@db:5432/mydb?sslmode=disable",
+#        conn_max_age=600,
+#        ssl_require=ssl_require
+#    )
+#}
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
+DATABASES = {
+     "default": {
+         "ENGINE": "django.db.backends.sqlite3",
+         "NAME": BASE_DIR / "db.sqlite3",
+     }
+ }
 
 
 # Password validation
