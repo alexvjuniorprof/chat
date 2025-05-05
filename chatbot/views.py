@@ -17,7 +17,7 @@ from .decorators import update_password
 from .models import Briefing, CustomUser, Teacher
 
 # Configurar a API do Google Gemini
-genai.configure(api_key="AIzaSyDkXZ684B14RXJQvnZBqvL82gOPXlUp2j0")
+genai.configure(api_key="AIzaSyCK2OuGBxXGyyje5P201VptjVdWPstdAlw")
 model = genai.GenerativeModel("gemini-pro")
 
 
