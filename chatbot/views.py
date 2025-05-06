@@ -18,7 +18,7 @@ from .models import Briefing, CustomUser, Teacher
 
 # Configurar a API do Google Gemini
 genai.configure(api_key="AIzaSyDCWEpGP0vV3JCd60O7192_2RDkme3BTqo")
-model = genai.GenerativeModel("gemini-pro")
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 
 @login_required(redirect_field_name='login')
